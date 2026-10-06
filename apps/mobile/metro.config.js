@@ -23,7 +23,5 @@ config.resolver.extraNodeModules = {
   'react-native': path.resolve(projectRoot, 'node_modules/react-native'),
   'h3-js': path.resolve(projectRoot, 'node_modules/h3-js'),
 };
-config.resolver.unstable_enableSymlinks = true;
-config.resolver.unstable_enablePackageExports = true;
 
 module.exports = config;

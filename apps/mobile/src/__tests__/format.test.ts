@@ -68,3 +68,18 @@ describe('silüet', () => {
     expect(d.endsWith('Z')).toBe(true);
   });
 });
+
+import { toRoute } from '../lib/deeplink';
+
+describe('derin bağlantılar', () => {
+  it('hexrun:// yolları', () => {
+    expect(toRoute('hexrun://run?defend=d1')).toBe('/run?defend=d1');
+    expect(toRoute('hexrun://duel/abc')).toBe('/duel/abc');
+    expect(toRoute('hexrun://league')).toBe('/league');
+    expect(toRoute('hexrun://integrations?connected=strava')).toBe('/profile/integrations?connected=strava');
+    expect(toRoute('https://hexrun.co/app/duel/x')).toBe('/duel/x');
+    expect(toRoute('hexrun://map')).toBe('/');
+    expect(toRoute('https://evil.example/duel/x')).toBeNull();
+    expect(toRoute('hexrun://unknown')).toBeNull();
+  });
+});
