@@ -29,13 +29,19 @@ declare module 'fastify' {
   }
 }
 
+function cursorDate(c: string): Date {
+  const n = Number(c);
+  if (!/^\d{1,15}$/.test(c) || !Number.isFinite(n)) throw badRequest('validation', 'Geçersiz sayfa imleci.');
+  return new Date(n);
+}
+
 const parse = <T extends ZodTypeAny>(schema: T, v: unknown): z.infer<T> => schema.parse(v);
 
 export async function buildApp(d: Deps): Promise<FastifyInstance> {
   const app = Fastify({
     logger: d.cfg.NODE_ENV === 'test' ? false : { level: d.cfg.LOG_LEVEL, redact: ['req.headers.authorization', 'body.points', 'body.refreshToken'] },
     bodyLimit: 8 * 1024 * 1024,
-    trustProxy: true,
+    trustProxy: (_addr: string, hop: number) => hop < d.cfg.TRUST_PROXY_HOPS,
     genReqId: () => crypto.randomUUID(),
   });
 
@@ -58,7 +64,8 @@ export async function buildApp(d: Deps): Promise<FastifyInstance> {
   await app.register(rateLimit, {
     max: d.cfg.RATE_LIMIT_PER_MIN,
     timeWindow: '1 minute',
-    keyGenerator: (req) => req.headers.authorization?.slice(-24) ?? req.ip,
+    // Anahtar istemci IP'si: başlıkla değiştirilebilen bir değer sınırı atlatamaz.
+    keyGenerator: (req) => req.ip,
     errorResponseBuilder: () => ({ statusCode: 429, error: { code: 'rate_limited', message: 'Çok fazla istek. Biraz bekle.' } }),
   });
 
@@ -86,8 +93,11 @@ export async function buildApp(d: Deps): Promise<FastifyInstance> {
     const h = req.headers.authorization;
     if (!h?.startsWith('Bearer ')) throw unauthorized();
     const c = await verifyAccess(d, h.slice(7));
+    // Silinmiş hesabın hâlâ geçerli erişim jetonu 401 alır.
+    const u = await d.db.query<{ role: 'user' | 'admin' }>('SELECT role FROM users WHERE id = $1', [c.sub]);
+    if (!u.rows[0]) throw unauthorized('Hesap bulunamadı.');
     req.userId = c.sub;
-    req.role = c.role;
+    req.role = u.rows[0].role;
   };
   const adminOnly = async (req: FastifyRequest) => {
     await authed(req);
@@ -182,7 +192,7 @@ export async function buildApp(d: Deps): Promise<FastifyInstance> {
     return summary;
   });
   app.get<{ Querystring: { cursor?: string } }>('/v1/runs', { preHandler: authed }, async (req) => {
-    const before = req.query.cursor ? new Date(Number(req.query.cursor)) : new Date(d.clock.now() + 86_400_000);
+    const before = req.query.cursor ? cursorDate(req.query.cursor) : new Date(d.clock.now() + 86_400_000);
     const r = await d.db.query<{ id: string; source: string; started_at: Date; ended_at: Date; distance_m: number; duration_ms: number; status: string; gained_area_m2: number; loops: string }>(
       `SELECT r.id, r.source, r.started_at, r.ended_at, r.distance_m, r.duration_ms, r.status, r.gained_area_m2,
          (SELECT COUNT(*) FROM loops l WHERE l.run_id = r.id) loops
@@ -265,16 +275,20 @@ export async function buildApp(d: Deps): Promise<FastifyInstance> {
     await social.removeFriend(d, uid(req), req.params.id);
     return reply.status(204).send();
   });
-  app.get<{ Querystring: { cursor?: string } }>('/v1/feed', { preHandler: authed }, async (req) => social.getFeed(d, uid(req), req.query.cursor ?? null));
+  app.get<{ Querystring: { cursor?: string } }>('/v1/feed', { preHandler: authed }, async (req) => {
+    if (req.query.cursor) cursorDate(req.query.cursor);
+    return social.getFeed(d, uid(req), req.query.cursor ?? null);
+  });
   app.post<{ Params: { id: string } }>('/v1/feed/:id/clap', { preHandler: authed }, async (req) => {
     if (!/^[0-9a-f-]{36}$/.test(req.params.id)) throw notFound('Gönderi bulunamadı.');
     return social.clap(d, uid(req), req.params.id);
   });
 
   /* Bildirim, etkinlik */
-  app.get<{ Querystring: { filter?: string; cursor?: string } }>('/v1/notifications', { preHandler: authed }, async (req) =>
-    notif.listNotifications(d, uid(req), req.query.filter ?? 'all', req.query.cursor ?? null),
-  );
+  app.get<{ Querystring: { filter?: string; cursor?: string } }>('/v1/notifications', { preHandler: authed }, async (req) => {
+    if (req.query.cursor) cursorDate(req.query.cursor);
+    return notif.listNotifications(d, uid(req), req.query.filter ?? 'all', req.query.cursor ?? null);
+  });
   app.post('/v1/notifications/read', { preHandler: authed }, async (req, reply) => {
     await notif.markRead(d, uid(req), parse(S.readNotifs, req.body ?? {}).ids);
     return reply.status(204).send();
@@ -305,7 +319,11 @@ export async function buildApp(d: Deps): Promise<FastifyInstance> {
   });
   app.post('/v1/integrations/strava/webhook', async (req, reply) => {
     // Strava 2 sn içinde yanıt bekler: işlemi arka planda yap.
-    void integ.stravaEvent(d, (req.body ?? {}) as never).catch((e) => req.log.warn({ err: e }, 'strava event failed'));
+    const ev = (req.body ?? {}) as { subscription_id?: number | string };
+    if (d.cfg.STRAVA_SUBSCRIPTION_ID && String(ev.subscription_id) !== d.cfg.STRAVA_SUBSCRIPTION_ID) {
+      return reply.status(403).send({ error: { code: 'forbidden', message: 'Abonelik tanınmadı.' } });
+    }
+    void integ.stravaEvent(d, ev as never).catch((e) => req.log.warn({ err: e }, 'strava event failed'));
     return reply.status(200).send({ ok: true });
   });
   app.post<{ Params: { provider: string } }>('/v1/integrations/:provider/webhook', async (req) => {

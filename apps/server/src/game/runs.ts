@@ -16,6 +16,7 @@ import {
   fmtKm,
   outline,
   pathLengthM,
+  HIDDEN_PLAYER_NAME,
   type GameNotice,
   type PlayerState,
   type ReviewResult,
@@ -27,8 +28,9 @@ import { txRetry, type Tx } from '../db.js';
 import { uuid } from '../lib/crypto.js';
 import { badRequest } from '../lib/errors.js';
 import { leagueRegionFor } from '../lib/regions.js';
-import { applyLoopTx, type LoopTxResult } from './play.js';
-import { insertNotifications, loadNames, noticeToNotification, type NewNotification } from './notify.js';
+import { applyLoopTx, lockForRun, type LoopTxResult } from './play.js';
+import { buildNotifications, insertNotifications } from './notify.js';
+import { anyHidden, hiddenPlayer, loadZones } from './privacy.js';
 import { loadPublicPlayers } from './players.js';
 import { awardBadges, badgeDto, bumpStats, monthDistance, playerStats, refreshPeak, streakFor, type StatKey } from './progress.js';
 
@@ -62,6 +64,10 @@ export async function submitRun(d: Deps, userId: string, req: SubmitRunRequest):
     await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [`user:${userId}`]);
     const again = await c.query<{ summary: RunSummary | null }>('SELECT summary FROM runs WHERE user_id = $1 AND client_run_id = $2', [userId, req.clientRunId]);
     if (again.rows[0]?.summary) return again.rows[0].summary;
+    if (req.externalId) {
+      const ex = await c.query<{ summary: RunSummary | null }>('SELECT summary FROM runs WHERE user_id = $1 AND source = $2 AND external_id = $3', [userId, req.source, req.externalId]);
+      if (ex.rows[0]?.summary) return ex.rows[0].summary;
+    }
     return processRun(d, c, userId, req, pts, now);
   });
 }
@@ -128,8 +134,10 @@ async function processRun(d: Deps, c: Tx, userId: string, req: SubmitRunRequest,
   let gainedTotal = 0;
   const gainedCells: string[] = [];
 
+  const cellsByLoop = new Map(loops.map((l) => [l.index, loopCells(l)]));
+  if (!reviewInfo && decision !== 'stats_only' && loops.length) await lockForRun(c, userId, [...cellsByLoop.values()].flat());
   for (const loop of loops) {
-    const cells = loopCells(loop);
+    const cells = cellsByLoop.get(loop.index)!;
     const areaM2 = cellsAreaM2(cells);
     const status = reviewInfo ? 'review' : decision === 'stats_only' ? 'stats_only' : 'applied';
     const lr: LoopResult = {
@@ -201,6 +209,10 @@ async function processRun(d: Deps, c: Tx, userId: string, req: SubmitRunRequest,
 
   // Rakip bilgisi
   const pub = await loadPublicPlayers(c, opponentIds);
+  const zones = await loadZones(c, opponentIds);
+  // Gizlilik bölgesindeki peteklerin sahibi saldırgana adıyla gösterilmez.
+  const oppFor = (id: string, cells: readonly string[]) =>
+    pub.has(id) ? (anyHidden(zones.get(id), cells) ? hiddenPlayer(d, id, pub.get(id)!.slot) : pub.get(id)!) : null;
   for (const a of applied) {
     const lr = results.find((x) => x.index === a.idx)!;
     lr.hits = a.tx.outcome.hits.map((h): DuelHitDto => {
@@ -211,7 +223,7 @@ async function processRun(d: Deps, c: Tx, userId: string, req: SubmitRunRequest,
         role: h.role,
         counted: h.counted,
         ...(h.reason ? { reason: h.reason } : {}),
-        opponent: pub.get(opp) ?? null,
+        opponent: h.role === 'attack' ? oppFor(opp, duel.cells) : pub.get(opp) ?? null,
         hpBefore: Math.round(h.hpBefore),
         hpAfter: Math.round(h.hpAfter),
         captured: h.captured,
@@ -221,13 +233,11 @@ async function processRun(d: Deps, c: Tx, userId: string, req: SubmitRunRequest,
   }
   const sugg = suggestions
     .filter((s) => pub.has(s.defender.id))
-    .map((s) => ({ ...s, defender: pub.get(s.defender.id)! }))
+    .map((s) => ({ ...s, defender: oppFor(s.defender.id, s.cells)! }))
     .filter((s, i, arr) => arr.findIndex((x) => x.defender.id === s.defender.id) === i);
 
   // Bildirimler
-  const names = await loadNames(c, notices.flatMap((n) => ('attackerId' in n ? [n.attackerId] : 'defenderId' in n ? [n.defenderId] : [])));
-  const notifs = notices.map((n) => noticeToNotification(n, names)).filter((x): x is NewNotification => !!x);
-  await insertNotifications(c, notifs, now);
+  await insertNotifications(c, await buildNotifications(c, notices, now, HIDDEN_PLAYER_NAME), now);
 
   // İstatistik, seri, lig
   const lt = localTime(startedAt);

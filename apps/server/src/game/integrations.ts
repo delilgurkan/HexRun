@@ -129,7 +129,9 @@ export async function stravaEvent(d: Deps, ev: { object_type?: string; aspect_ty
   if (!token) return null;
   const act = await d.fetch(`https://www.strava.com/api/v3/activities/${ev.object_id}`, { headers: { authorization: `Bearer ${token}` } });
   if (!act.ok) return null;
-  const a = (await act.json()) as { type?: string; sport_type?: string; start_date?: string; external_id?: string | null; device_name?: string };
+  const a = (await act.json()) as { type?: string; sport_type?: string; start_date?: string; external_id?: string | null; device_name?: string; athlete?: { id?: number } };
+  // Etkinlik gerçekten bu sporcunun mu? (Sahte web kancası başkasının etkinliğini aktaramaz.)
+  if (a.athlete?.id !== undefined && a.athlete.id !== ev.owner_id) return null;
   // HexRun'dan Strava'ya giden koşu geri alınmaz.
   if (a.external_id?.startsWith('hexrun-')) return null;
   if (!['Run', 'TrailRun', 'VirtualRun'].includes(a.sport_type ?? a.type ?? '')) return null;

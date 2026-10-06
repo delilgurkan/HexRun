@@ -445,3 +445,32 @@ describe('geç gelen halkalar', () => {
     expect(duelOf(w).lastAttackAt).toBe(at(1, 12));
   });
 });
+
+describe('inceleme bulguları', () => {
+  it('dünkü geç halka bugünün günlük sınırını sıfırlamaz', () => {
+    const w = worldWith('b', AREA, 85, at(0, 0), [player('a'), player('b')]);
+    w.eventsEnabled = false;
+    createDuel(w, 'd1', 'a', AREA, at(0, 1));
+    applyLoop(w, { playerId: 'a', cells: AREA, at: at(1, 12) });
+    applyLoop(w, { playerId: 'a', cells: AREA, at: at(1, 13) });
+    const late = applyLoop(w, { playerId: 'a', cells: AREA, at: at(0, 23) });
+    expect(late.hits[0]).toMatchObject({ counted: false, reason: 'daily_limit' });
+    const again = applyLoop(w, { playerId: 'a', cells: AREA, at: at(1, 14) });
+    expect(again.hits[0]).toMatchObject({ counted: false, reason: 'daily_limit' });
+    expect(duelOf(w).progress).toBe(20);
+    // Sahibin petek sayacı da
+    applyLoop(w, { playerId: 'b', cells: AREA, at: at(1, 15) });
+    applyLoop(w, { playerId: 'b', cells: AREA, at: at(1, 16) });
+    const o = applyLoop(w, { playerId: 'b', cells: AREA, at: at(0, 22) });
+    expect(o.reinforced).toHaveLength(0);
+  });
+  it('düellodan önce koşulmuş halka geriye dönük sayılmaz', () => {
+    const w = worldWith('b', AREA, 85, at(0, 0), [player('a'), player('b')]);
+    createDuel(w, 'd1', 'a', AREA, at(0, 17));
+    const o = applyLoop(w, { playerId: 'a', cells: AREA, at: at(0, 14) });
+    expect(o.hits).toHaveLength(0);
+    expect(duelOf(w).firstCountedAt).toBeNull();
+    const def = applyLoop(w, { playerId: 'b', cells: AREA, at: at(0, 15) });
+    expect(def.hits).toHaveLength(0);
+  });
+});

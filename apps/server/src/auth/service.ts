@@ -49,15 +49,24 @@ export async function startEmail(d: Deps, emailRaw: string): Promise<{ sent: tru
 export async function verifyEmail(d: Deps, emailRaw: string, code: string): Promise<AuthResponse> {
   const email = normEmail(emailRaw);
   const now = d.clock.now();
-  const row = (await d.db.query<{ code_hash: string; expires_at: Date; attempts: number }>('SELECT code_hash, expires_at, attempts FROM email_codes WHERE email = $1', [email])).rows[0];
-  if (!row || row.expires_at.getTime() < now) throw unauthorized('Kodun süresi doldu; yeni kod iste.');
-  if (row.attempts >= MAX_ATTEMPTS) throw tooMany('Çok fazla hatalı deneme; yeni kod iste.');
-  const ok = safeEqual(row.code_hash, hmac(d.cfg.HASH_SECRET, `${email}|${String(code).trim()}`));
-  if (!ok) {
-    await d.db.query('UPDATE email_codes SET attempts = attempts + 1 WHERE email = $1', [email]);
-    throw unauthorized('Kod hatalı.');
+  // Deneme hakkı atomik olarak düşülür: paralel tahminler sınırı aşamaz.
+  const row = (
+    await d.db.query<{ code_hash: string; expires_at: Date }>(
+      'UPDATE email_codes SET attempts = attempts + 1 WHERE email = $1 AND attempts < $2 RETURNING code_hash, expires_at',
+      [email, MAX_ATTEMPTS],
+    )
+  ).rows[0];
+  if (!row) {
+    const exists = await d.db.query('SELECT 1 FROM email_codes WHERE email = $1', [email]);
+    if (exists.rowCount) throw tooMany('Çok fazla hatalı deneme; yeni kod iste.');
+    throw unauthorized('Kodun süresi doldu; yeni kod iste.');
   }
-  await d.db.query('DELETE FROM email_codes WHERE email = $1', [email]);
+  if (row.expires_at.getTime() < now) throw unauthorized('Kodun süresi doldu; yeni kod iste.');
+  const ok = safeEqual(row.code_hash, hmac(d.cfg.HASH_SECRET, `${email}|${String(code).trim()}`));
+  if (!ok) throw unauthorized('Kod hatalı.');
+  // Tek kullanımlık: aynı anda iki doğrulamadan yalnız biri kodu silebilir.
+  const used = await d.db.query('DELETE FROM email_codes WHERE email = $1 AND code_hash = $2', [email, row.code_hash]);
+  if (!used.rowCount) throw unauthorized('Kod zaten kullanıldı.');
   return loginWith(d, { email, emailVerified: true, kind: 'email' });
 }
 

@@ -55,6 +55,43 @@ export function withSuffix(name: string): string {
   return `${name}'${endsVowel ? 'y' : ''}${back ? 'la' : 'le'}`;
 }
 
+/**
+ * Motor uyarılarını bildirime çevirir:
+ * - kuşatma/el değiştirme bildirimleri sahip düelloyu görebildiği andan önce görünmez (Şafak Akıncısı gecikmesi),
+ * - gizlilik bölgesindeki peteklerin sahibi kazanılan düello bildiriminde adıyla anılmaz,
+ * - her bildirim andığı oyuncuyu `actorId` olarak saklar (hesap silmede temizlenir).
+ */
+export async function buildNotifications(q: Queryable, notices: readonly GameNotice[], now: number, hiddenName: string): Promise<NewNotification[]> {
+  if (!notices.length) return [];
+  const duelIds = [...new Set(notices.map((n) => ('duelId' in n ? n.duelId : null)).filter((x): x is string => !!x))];
+  const duels = new Map(
+    (
+      await q.query<{ id: string; cells: string[]; defender_id: string; defender_visible_at: Date | null }>('SELECT id, cells, defender_id, defender_visible_at FROM duels WHERE id = ANY($1::uuid[])', [duelIds])
+    ).rows.map((x) => [x.id, x]),
+  );
+  const names = await loadNames(q, notices.flatMap((n) => ('attackerId' in n ? [n.attackerId] : 'defenderId' in n ? [n.defenderId] : [])));
+  const { loadZones, anyHidden } = await import('./privacy.js');
+  const zones = await loadZones(q, [...duels.values()].map((x) => x.defender_id));
+  const out: NewNotification[] = [];
+  for (const n of notices) {
+    let local = names;
+    if (n.type === 'duel_won') {
+      const du = duels.get(n.duelId);
+      if (du && anyHidden(zones.get(du.defender_id), du.cells)) local = new Map([...names, [n.defenderId, hiddenName]]);
+    }
+    const x = noticeToNotification(n, local);
+    if (!x) continue;
+    const actor = 'attackerId' in n ? n.attackerId : 'defenderId' in n ? n.defenderId : null;
+    if (actor) x.data = { ...(x.data ?? {}), actorId: actor };
+    if (n.type === 'siege_warn' || n.type === 'siege_alarm' || n.type === 'cells_lost') {
+      const vis = duels.get(n.duelId)?.defender_visible_at?.getTime() ?? now;
+      x.pushAfter = Math.max(now, vis);
+    }
+    out.push(x);
+  }
+  return out;
+}
+
 export function noticeToNotification(n: GameNotice, names: Names): NewNotification | null {
   const nm = (id: string) => names.get(id) ?? 'Bir oyuncu';
   switch (n.type) {

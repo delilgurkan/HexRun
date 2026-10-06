@@ -38,6 +38,10 @@ const schema = z.object({
   AUTH_RATE_LIMIT_PER_MIN: z.coerce.number().int().default(10),
   RUN_RATE_LIMIT_PER_MIN: z.coerce.number().int().default(30),
   LOG_LEVEL: z.string().default('info'),
+  /** Önündeki güvenilir vekil (yük dengeleyici) sayısı; X-Forwarded-For yalnız bu kadar atlanır. */
+  TRUST_PROXY_HOPS: z.coerce.number().int().min(0).default(0),
+  /** Strava web kancası abonelik kimliği (ayarlıysa olaylar buna göre doğrulanır). */
+  STRAVA_SUBSCRIPTION_ID: z.string().optional(),
 });
 
 export type Config = z.infer<typeof schema>;

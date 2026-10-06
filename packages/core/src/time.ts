@@ -59,10 +59,17 @@ export interface DayCounter {
   count: number;
 }
 
+/**
+ * Sayaç tek gün saklar. Daha eski bir gün için soru gelirse (geç gelen halka) sınır dolmuş
+ * sayılır: aksi halde dünkü bir halka bugünün sayacını sıfırlayıp günlük sınırı aşabilir.
+ */
 export function counterValue(c: DayCounter | null | undefined, day: string): number {
-  return c && c.day === day ? c.count : 0;
+  if (!c) return 0;
+  if (c.day === day) return c.count;
+  return c.day > day ? Number.POSITIVE_INFINITY : 0;
 }
 
 export function bump(c: DayCounter | null | undefined, day: string): DayCounter {
-  return { day, count: counterValue(c, day) + 1 };
+  if (c && c.day > day) return c;
+  return { day, count: (c && c.day === day ? c.count : 0) + 1 };
 }

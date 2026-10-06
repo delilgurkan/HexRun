@@ -1,11 +1,11 @@
 import type { Deps } from './deps.js';
 import { txRetry } from './db.js';
 import { tickRegionTx } from './game/play.js';
-import { insertNotifications, loadNames, noticeToNotification, type NewNotification } from './game/notify.js';
+import { buildNotifications, insertNotifications } from './game/notify.js';
 import { decayWarnings, dispatchPush, eventReminders } from './game/notifications.js';
 import { bumpStats, refreshPeak } from './game/progress.js';
 import { snapshotLeagues } from './game/social.js';
-import { DAY_MS } from '@hexrun/core';
+import { DAY_MS, HIDDEN_PLAYER_NAME } from '@hexrun/core';
 
 /** Tüm bölgeler için erime/düello zamanlayıcısı. */
 export async function runTick(d: Deps): Promise<{ regions: number; notices: number }> {
@@ -20,8 +20,7 @@ export async function runTick(d: Deps): Promise<{ regions: number; notices: numb
   for (const region of regions) {
     await txRetry(d.db, async (c) => {
       const r = await tickRegionTx(c, region, now);
-      const names = await loadNames(c, r.notices.flatMap((n) => ('attackerId' in n ? [n.attackerId] : [])));
-      const list = r.notices.map((n) => noticeToNotification(n, names)).filter((x): x is NewNotification => !!x);
+      const list = await buildNotifications(c, r.notices, now, HIDDEN_PLAYER_NAME);
       await insertNotifications(c, list, now);
       notices += list.length;
       for (const pd of r.persisted.duels) {

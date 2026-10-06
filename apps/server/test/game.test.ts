@@ -499,7 +499,11 @@ describe('hesap', () => {
     const left = await ctx.db.query('SELECT COUNT(*)::int n FROM cells WHERE owner_id = $1', [emre.id]);
     expect(left.rows[0].n).toBe(0);
     expect((await ctx.app.inject({ method: 'POST', url: '/v1/auth/refresh', payload: { refreshToken: emre.refresh } })).statusCode).toBe(401);
-    expect((await ctx.app.inject({ method: 'GET', url: '/v1/me', headers: { authorization: `Bearer ${emre.token}` } })).statusCode).toBe(404);
+    expect((await ctx.app.inject({ method: 'GET', url: '/v1/me', headers: { authorization: `Bearer ${emre.token}` } })).statusCode).toBe(401);
+    expect((await ctx.app.inject({ method: 'GET', url: '/v1/me/stats', headers: { authorization: `Bearer ${emre.token}` } })).statusCode).toBe(401);
+    // Başkalarının bildirimlerinde Emre'yi anan satır kalmaz
+    const left2 = await ctx.db.query(`SELECT COUNT(*)::int n FROM notifications WHERE title LIKE '%Emre%' OR body LIKE '%Emre%'`);
+    expect(left2.rows[0].n).toBe(0);
   });
 });
 

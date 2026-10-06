@@ -230,7 +230,7 @@ export function applyLoop(w: World, input: LoopInput): LoopOutcome {
 
   // 2) Savunma: sahibin alanı dolaşan halkası saldırganları geri iter.
   for (const d of myDefDuels) {
-    if (d.status !== 'active') continue;
+    if (d.status !== 'active' || at < d.createdAt) continue;
     const area = liveArea(w, d);
     const cov = coverage(loopSet, area);
     const before = hpBefore.get(d.id) ?? 0;
@@ -258,6 +258,8 @@ export function applyLoop(w: World, input: LoopInput): LoopOutcome {
   const limit = isNewbie(me, at) ? RULES.NEWBIE_ATTACK_LIMIT : RULES.ATTACK_DAILY_LIMIT;
   for (const d of myAtkDuels) {
     if (d.status !== 'active') continue; // önceki bir fetih bu düelloyu sıfırlamış olabilir
+    // Düellodan önce koşulmuş halka geriye dönük sayılmaz.
+    if (at < d.createdAt) continue;
     const area = liveArea(w, d);
     const before = duelHp(w, d);
     if (area.length < RULES.DUEL_MIN_CELLS) {

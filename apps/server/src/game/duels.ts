@@ -14,12 +14,13 @@ import {
 } from '@hexrun/core';
 import type { DuelPreview, DuelSummary } from '@hexrun/contracts';
 import type { Deps } from '../deps.js';
-import { tx } from '../db.js';
+import { txRetry } from '../db.js';
 import { uuid } from '../lib/crypto.js';
 import { badRequest, conflict, forbidden, notFound } from '../lib/errors.js';
 import { createDuelTx } from './play.js';
 import { loadPublicPlayers } from './players.js';
-import { addDuels, emptyWorld, loadCells, type DuelRow } from './world.js';
+import { anyHidden, hiddenPlayer, loadZones } from './privacy.js';
+import { addDuels, emptyWorld, loadCells, lockRegions, type DuelRow } from './world.js';
 
 export const DUEL_ERROR_TEXT: Record<DuelError, string> = {
   self: 'Kendi alanına düello açamazsın.',
@@ -44,6 +45,10 @@ export async function duelSummaries(d: Deps, viewerId: string, ids: readonly str
   // Düellolar gizli: sahip tümünü, saldırgan yalnız kendisininkini görür.
   const visible = rows.filter((r) => r.attacker_id === viewerId || (r.defender_id === viewerId && defenderCanSee(r, now)));
   const pub = await loadPublicPlayers(d.db, visible.flatMap((r) => [r.attacker_id, r.defender_id]));
+  const zones = await loadZones(d.db, visible.map((r) => r.defender_id));
+  // Saldırgan, gizlilik bölgesindeki peteklere saldırıyorsa sahibin kimliğini görmez.
+  const defenderFor = (r: DuelRow) =>
+    r.attacker_id === viewerId && anyHidden(zones.get(r.defender_id), r.cells) ? hiddenPlayer(d, r.defender_id, pub.get(r.defender_id)!.slot) : pub.get(r.defender_id)!;
   const w = emptyWorld();
   const c = await d.db.connect();
   try {
@@ -65,7 +70,7 @@ export async function duelSummaries(d: Deps, viewerId: string, ids: readonly str
       id: r.id,
       status: r.status,
       attacker: pub.get(r.attacker_id)!,
-      defender: pub.get(r.defender_id)!,
+      defender: defenderFor(r),
       cells: r.cells,
       hp: Math.round(hp),
       power: Math.round(power),
@@ -122,18 +127,23 @@ export async function previewDuel(d: Deps, userId: string, cells: string[]): Pro
 
 export async function startDuel(d: Deps, userId: string, cells: string[]): Promise<DuelSummary> {
   const id = uuid();
-  const r = await tx(d.db, (c) => createDuelTx(c, id, userId, cells, d.clock.now()));
+  const r = await txRetry(d.db, (c) => createDuelTx(c, id, userId, cells, d.clock.now()));
   if (typeof r === 'string') throw (r === 'limit' || r === 'overlap' ? conflict : badRequest)(`duel_${r}`, DUEL_ERROR_TEXT[r]);
   return (await duelSummaries(d, userId, [id]))[0]!;
 }
 
 export async function cancelDuel(d: Deps, userId: string, id: string): Promise<void> {
-  const r = await d.db.query<{ attacker_id: string; status: string }>('SELECT attacker_id, status FROM duels WHERE id = $1', [id]);
-  const row = r.rows[0];
-  if (!row) throw notFound('Düello bulunamadı.');
-  if (row.attacker_id !== userId) throw forbidden('Yalnız düelloyu açan vazgeçebilir.');
-  if (row.status !== 'active') throw conflict('duel_not_active', 'Düello zaten bitti.');
-  await d.db.query(`UPDATE duels SET status = 'cancelled', ended_at = $2 WHERE id = $1 AND status = 'active'`, [id, new Date(d.clock.now())]);
+  await txRetry(d.db, async (c) => {
+    const first = (await c.query<{ attacker_id: string; lock_regions: string[] }>('SELECT attacker_id, lock_regions FROM duels WHERE id = $1', [id])).rows[0];
+    if (!first) throw notFound('Düello bulunamadı.');
+    if (first.attacker_id !== userId) throw forbidden('Yalnız düelloyu açan vazgeçebilir.');
+    // Halka işlemleriyle aynı bölge kilitleri: eşzamanlı bir halka iptali geri yazamaz.
+    await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [`user:${userId}`]);
+    await lockRegions(c, first.lock_regions);
+    const row = (await c.query<{ status: string }>('SELECT status FROM duels WHERE id = $1', [id])).rows[0]!;
+    if (row.status !== 'active') throw conflict('duel_not_active', 'Düello zaten bitti.');
+    await c.query(`UPDATE duels SET status = 'cancelled', ended_at = $2 WHERE id = $1`, [id, new Date(d.clock.now())]);
+  });
 }
 
 export async function listDuels(d: Deps, userId: string): Promise<{ attacking: DuelSummary[]; defending: DuelSummary[] }> {

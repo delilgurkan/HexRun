@@ -2,6 +2,7 @@ import {
   assignDisplayColors,
   cellCenter,
   cellsAreaM2,
+  components,
   eventWindow,
   EVENTS,
   HIDDEN_PLAYER_NAME,
@@ -15,7 +16,7 @@ import { DAY_MS, circleTrack, cellsInPolygon, destination, haversineM, pathLengt
 import type { ActiveEvent, FirstLoopSuggestion, MapCell, MapPlayer, MapResponse, RegionDetail, Slot } from '@hexrun/contracts';
 import type { Deps } from '../deps.js';
 import type { Queryable } from '../db.js';
-import { hmac } from '../lib/crypto.js';
+import { cellHidden, hiddenIdFor, loadZones } from './privacy.js';
 import { badRequest } from '../lib/errors.js';
 import { asSlot, loadPublicPlayers } from './players.js';
 import { duelSummaries } from './duels.js';
@@ -184,7 +185,7 @@ export async function getMap(d: Deps, viewerId: string, bboxStr: string): Promis
   }
 
   // Gizlilik: bölgedeki petekler "Gizli oyuncu"; kimlik opak.
-  const hiddenId = (ownerId: string) => `hidden:${hmac(d.cfg.HASH_SECRET, `hidden|${ownerId}`).slice(0, 16)}`;
+  const hiddenId = (ownerId: string) => hiddenIdFor(d.cfg.HASH_SECRET, ownerId);
   const isHidden = (r: CellRow) => {
     if (r.owner_id === viewerId) return false;
     const o = owners.get(r.owner_id);
@@ -304,13 +305,14 @@ export async function getRegion(d: Deps, viewerId: string, cellId: string): Prom
     return { owner: null, hidden: false, cells: [cellId], areaM2: Math.round(cellsAreaM2([cellId])), avgPower: 0, ownedSinceDays: null, lastDefenseAt: null, myDuel: null, incomingDuels: [], history: [], activeEvents: events, canStartDuel: false, duelSlotsLeft: slotsLeft };
   }
   const ownerId = cell.owner_id;
-  const ids = await regionCells(d.db, cellId, ownerId);
+  const zones = await loadZones(d.db, [ownerId]);
+  const zone = ownerId === viewerId ? undefined : zones.get(ownerId);
+  const hidden = cellHidden(zone, cellId);
+  // Gizli ve açık petekler hiçbir zaman tek bölgede birleşmez: dokunulan peteğin tarafında kalanlar.
+  const all = await regionCells(d.db, cellId, ownerId);
+  const sameSide = zone ? all.filter((c) => cellHidden(zone, c) === hidden) : all;
+  const ids = zone ? (components(sameSide).find((comp) => comp.includes(cellId)) ?? [cellId]) : all;
   const owner = (await loadPublicPlayers(d.db, [ownerId])).get(ownerId)!;
-  const priv = (await d.db.query<{ privacy_lat: number | null; privacy_lng: number | null; privacy_radius_m: number | null }>('SELECT privacy_lat, privacy_lng, privacy_radius_m FROM users WHERE id = $1', [ownerId])).rows[0]!;
-  const hidden =
-    ownerId !== viewerId &&
-    priv.privacy_radius_m !== null &&
-    inZone({ center: { lat: priv.privacy_lat!, lng: priv.privacy_lng! }, radiusM: priv.privacy_radius_m }, cellCenter(cellId));
   const agg = (await d.db.query<{ p: number; since: Date | null }>('SELECT AVG(power)::float8 p, MIN(owned_since) since FROM cells WHERE id = ANY($1::text[])', [ids])).rows[0]!;
   const lastDef = (await d.db.query<{ at: Date | null }>(`SELECT MAX(at) at FROM cell_events WHERE kind = 'reinforce' AND cell_id = ANY($1::text[])`, [ids])).rows[0]!;
   const duelRows = (await d.db.query<{ id: string }>(`SELECT id FROM duels WHERE status = 'active' AND cells && $1::text[] AND (attacker_id = $2 OR defender_id = $2)`, [ids, viewerId])).rows;
@@ -325,8 +327,11 @@ export async function getRegion(d: Deps, viewerId: string, cellId: string): Prom
       [ids, new Date(now - 60 * DAY_MS)],
     )
   ).rows;
-  const names = await loadPublicPlayers(d.db, hist.flatMap((h) => [h.actor_id, h.from_id].filter((x): x is string => !!x)));
-  const nm = (id: string | null) => (id ? names.get(id)?.displayName ?? 'Bir oyuncu' : 'Bir oyuncu');
+  const histIds = hist.flatMap((h) => [h.actor_id, h.from_id].filter((x): x is string => !!x));
+  const names = await loadPublicPlayers(d.db, histIds);
+  const histZones = await loadZones(d.db, histIds);
+  // Eski sahiplerin gizlilik bölgesi de korunur.
+  const nm = (id: string | null) => (!id ? 'Bir oyuncu' : id !== viewerId && cellHidden(histZones.get(id), cellId) ? HIDDEN_PLAYER_NAME : names.get(id)?.displayName ?? 'Bir oyuncu');
   const history = hist.map((h) => ({
     at: h.at.toISOString(),
     text: h.kind === 'claim' ? `${hidden ? 'Gizli oyuncu' : nm(h.actor_id)} aldı · boştu` : `${hidden ? 'Gizli oyuncu' : nm(h.actor_id)} aldı · ${nm(h.from_id)} oyuncusundan düelloyla`,

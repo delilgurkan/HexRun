@@ -18,7 +18,7 @@ import {
 } from '@hexrun/core';
 import type { BadgesResponse, Me, ShareCard, StatsResponse, UpdateMeRequest, UsernameAvailability } from '@hexrun/contracts';
 import type { Deps } from '../deps.js';
-import { tx } from '../db.js';
+import { tx, txRetry } from '../db.js';
 import { badRequest, conflict, notFound } from '../lib/errors.js';
 import { regionName } from '../lib/regions.js';
 import { asSlot, getUser, toMe } from './players.js';
@@ -250,7 +250,7 @@ export async function exportData(d: Deps, userId: string): Promise<Record<string
 
 /** Hesabı sil: petekler boşa düşer, düellolar ve tüm kişisel veriler silinir. */
 export async function deleteAccount(d: Deps, userId: string): Promise<void> {
-  await tx(d.db, async (c) => {
+  await txRetry(d.db, async (c) => {
     const regions = (await c.query<{ r: string }>('SELECT DISTINCT lock_region r FROM cells WHERE owner_id = $1', [userId])).rows.map((x) => x.r).sort();
     for (const r of regions) await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [`region:${r}`]);
     const team = (await c.query<{ team_id: string | null }>('SELECT team_id FROM users WHERE id = $1', [userId])).rows[0]?.team_id;
@@ -273,6 +273,8 @@ export async function deleteAccount(d: Deps, userId: string): Promise<void> {
     );
     await c.query('UPDATE cell_events SET actor_id = NULL WHERE actor_id = $1', [userId]);
     await c.query('UPDATE cell_events SET from_id = NULL WHERE from_id = $1', [userId]);
+    // Başkalarının bildirimlerinde bu oyuncuyu anan satırlar da silinir.
+    await c.query(`DELETE FROM notifications WHERE data->>'actorId' = $1`, [userId]);
     await c.query('DELETE FROM users WHERE id = $1', [userId]);
   });
 }

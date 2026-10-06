@@ -1,10 +1,10 @@
-import { DAY_MS, cellsAreaM2, dayKey } from '@hexrun/core';
+import { DAY_MS, HIDDEN_PLAYER_NAME, cellsAreaM2, dayKey } from '@hexrun/core';
 import type { Deps } from '../deps.js';
 import { txRetry } from '../db.js';
 import { conflict, notFound } from '../lib/errors.js';
 import { leagueRegionForCell } from '../lib/regions.js';
 import { applyLoopTx } from './play.js';
-import { insertNotifications, loadNames, noticeToNotification, type NewNotification } from './notify.js';
+import { buildNotifications, insertNotifications, type NewNotification } from './notify.js';
 import { awardBadges, bumpStats, refreshPeak } from './progress.js';
 
 export async function listReviews(d: Deps) {
@@ -53,7 +53,9 @@ export async function decideReview(d: Deps, adminId: string, loopId: string, dec
       await c.query(`UPDATE loops SET status = 'rejected', decided_by = $2, decided_at = $3 WHERE id = $1`, [loopId, adminId, new Date(now)]);
       notifs.push({ userId: l.user_id, kind: 'review_result', category: 'other', title: 'Halkan sayılmadı', body: 'İnceleme sonunda bu halka haritaya işlenmedi. Koşun ve serin kayıtlı kalır.', push: true });
     } else {
-      const r = await applyLoopTx(c, l.user_id, l.cells, l.closed_at.getTime(), now);
+      // Onay anında uygulanır: günlerce bekleyen halka eski zamanla erime saatini geriye atmaz,
+      // günlük sınırları ve düello başlangıcını aşmaz.
+      const r = await applyLoopTx(c, l.user_id, l.cells, now, now);
       const o = r.outcome;
       const captured = o.captured.flatMap((x) => x.cells);
       const gained = Math.round(cellsAreaM2([...o.newCells, ...captured]));
@@ -63,12 +65,11 @@ export async function decideReview(d: Deps, adminId: string, loopId: string, dec
         await c.query(
           `INSERT INTO area_gains (user_id, day, region, gained_m2) VALUES ($1, $2, $3, $4)
            ON CONFLICT (user_id, day, region) DO UPDATE SET gained_m2 = area_gains.gained_m2 + EXCLUDED.gained_m2`,
-          [l.user_id, dayKey(l.closed_at.getTime()), leagueRegionForCell(l.cells[0]!), gained],
+          [l.user_id, dayKey(now), leagueRegionForCell(l.cells[0]!), gained],
         );
         await c.query('UPDATE runs SET gained_area_m2 = gained_area_m2 + $2 WHERE id = $1', [l.run_id, gained]);
       }
-      const names = await loadNames(c, o.notices.flatMap((n) => ('attackerId' in n ? [n.attackerId] : 'defenderId' in n ? [n.defenderId] : [])));
-      notifs.push(...o.notices.map((n) => noticeToNotification(n, names)).filter((x): x is NewNotification => !!x));
+      notifs.push(...(await buildNotifications(c, o.notices, now, HIDDEN_PLAYER_NAME)));
       notifs.push({ userId: l.user_id, kind: 'review_result', category: 'other', title: 'Halkan onaylandı', body: gained ? `+${gained.toLocaleString('tr-TR')} m² haritaya işlendi.` : 'Halkan haritaya işlendi.', push: true });
       await refreshPeak(c, [l.user_id, ...o.captured.map((x) => x.fromId)]);
       await awardBadges(c, l.user_id, now);

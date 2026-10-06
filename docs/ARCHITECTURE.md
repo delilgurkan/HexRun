@@ -29,10 +29,11 @@ PostGIS gerekmez: mekânsal indeksleme H3 ebeveyn hücreleriyle yapılır.
 
 ## Eşzamanlılık
 
-Oyun durumunu değiştiren her işlem (halka, düello açma, zamanlayıcı) ilgili **res-5 bölgelerinin** danışma
-kilitlerini (`pg_advisory_xact_lock`) **sıralı** alır; böylece aynı mahalledeki işlemler sıraya girer, farklı
-mahalleler paralel çalışır ve kilitlenme oluşmaz. Kilit sonrası düellolar yeniden okunur; ölümcül kilitlenme ya da
-serileştirme hatasında işlem otomatik yeniden denenir. Koşu gönderimi kullanıcı başına ayrıca serileştirilir ve
+Oyun durumunu değiştiren her işlem (halka, düello açma/iptal, zamanlayıcı, hesap silme) önce kullanıcı kilidini,
+sonra ilgili **res-5 bölgelerinin** danışma kilitlerini (`pg_advisory_xact_lock`) **sıralı ve tek seferde** alır;
+aynı mahalledeki işlemler sıraya girer, farklı mahalleler paralel çalışır. Kilit alındıktan sonra yeni bir düello
+ortaya çıkarsa ek kilit alınır; bu nadir durumda PostgreSQL'in kilitlenme tespiti bir işlemi iptal eder ve işlem
+otomatik yeniden denenir (`txRetry`). Düello satırları yalnız `status = 'active'` iken yazılır (iptal geri yazılamaz). Koşu gönderimi kullanıcı başına ayrıca serileştirilir ve
 `clientRunId` ile idempotenttir (aynı koşu iki kez işlenmez — eşzamanlı çift gönderim testle doğrulandı).
 
 ## Zamanlanmış işler
@@ -50,6 +51,12 @@ toplu uygulanır), etkinlik hatırlatmaları, erime uyarıları, lig anlık gör
   `cell_events` için zaman bölümlemesi; okuma replikası.
 
 ## Bilinen sınırlamalar / yol haritası
+
+- Nişan etkileri koşunun **işlendiği** andaki nişanlara göre uygulanır; 24 saate kadar geç gönderilen bir koşu için
+  oyuncu arada nişan değiştirmiş olabilir (günde 1 değişiklik sınırı etkiyi sınırlar). Koşu başlangıcında nişan
+  anlık görüntüsü saklamak yol haritasında.
+- Günlük sayaçlar tek gün saklar: bugün sayılmış bir halkadan sonra gelen "dünkü" geç halka, sınırı aşmamak için
+  o sayaca sayılmaz (tutucu seçim).
 
 - Lig bölgeleri ilçe merkezine en yakın eşleme ile belirlenir (≤ 8 km). İlçe sınır poligonları eklenmeli.
 - Garmin, Coros, Suunto, Polar iş ortağı programları onay gerektirir; sunucu imzalı web kancası ve hesap bağlama

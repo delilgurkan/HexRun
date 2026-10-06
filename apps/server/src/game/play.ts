@@ -80,6 +80,20 @@ export async function applyLoopTx(c: Tx, userId: string, cells: readonly string[
   return { outcome, tickOutcome, world: w, persisted, recaptured };
 }
 
+/**
+ * Bir koşunun tüm halkalarının dokunacağı bölgeleri tek seferde, sıralı kilitler.
+ * Halka halka kilitlemek iki koşu arasında kilitlenmeye (deadlock) yol açabiliyordu.
+ */
+export async function lockForRun(c: Tx, userId: string, cells: readonly string[]): Promise<void> {
+  await ensureCells(c, cells);
+  const mine = await activeDuelsFor(c, userId);
+  const attackCells = mine.filter((d) => d.attacker_id === userId).flatMap((d) => d.cells);
+  const overlapping = await activeDuelsOverlapping(c, attackCells);
+  const regions = new Set<string>(cells.map(lockRegionOf));
+  for (const d of [...mine, ...overlapping]) d.lock_regions.forEach((r) => regions.add(r));
+  await lockRegions(c, regions);
+}
+
 function dedupe(rows: DuelRow[]): DuelRow[] {
   const m = new Map<string, DuelRow>();
   for (const r of rows) m.set(r.id, r);
@@ -88,6 +102,8 @@ function dedupe(rows: DuelRow[]): DuelRow[] {
 
 /** Düello başlatma (kilitli doğrulama). */
 export async function createDuelTx(c: Tx, id: string, attackerId: string, cells: readonly string[], now: number): Promise<DuelState | DuelError> {
+  // Saldırgan başına 3 düello sınırı bölgelerden bağımsız: önce kullanıcı kilidi (koşu gönderimiyle aynı sıra).
+  await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [`user:${attackerId}`]);
   const regions = new Set(cells.map(lockRegionOf));
   await lockRegions(c, regions);
   const w = emptyWorld();

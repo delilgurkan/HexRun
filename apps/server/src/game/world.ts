@@ -208,7 +208,7 @@ export async function persist(c: Tx, w: World, snap: Snapshot, now: number): Pro
     await c.query(
       `UPDATE duels SET cells = $2, progress = $3, first_counted_at = $4, last_attack_at = $5, attack_decay_steps = $6,
          attacks_day = $7, attacks_count = $8, defenses_day = $9, defenses_count = $10, warned = $11, status = $12, ended_at = $13
-       WHERE id = $1`,
+       WHERE id = $1 AND status = 'active'`,
       [
         d.id,
         d.cells,

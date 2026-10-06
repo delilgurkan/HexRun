@@ -216,6 +216,8 @@ export async function joinTeam(d: Deps, userId: string, code: string): Promise<T
     const me = (await c.query<UserRow>('SELECT * FROM users WHERE id = $1 FOR UPDATE', [userId])).rows[0]!;
     if (me.team_id === t.id) return;
     if (me.team_id) throw conflict('already_in_team', 'Önce mevcut takımından ayrıl.');
+    // Takım satırı kilitlenir: eşzamanlı katılımlar 50 sınırını aşamaz.
+    await c.query('SELECT 1 FROM teams WHERE id = $1 FOR UPDATE', [t.id]);
     const n = await c.query<{ n: string }>('SELECT COUNT(*) n FROM users WHERE team_id = $1', [t.id]);
     if (Number(n.rows[0]!.n) >= 50) throw conflict('team_full', 'Takım dolu (50 üye).');
     await c.query('UPDATE users SET team_id = $2 WHERE id = $1', [userId, t.id]);
@@ -223,8 +225,8 @@ export async function joinTeam(d: Deps, userId: string, code: string): Promise<T
     const name = me.display_name || me.username || 'Yeni üye';
     for (const m of members.rows) {
       await c.query(
-        `INSERT INTO notifications (id, user_id, kind, category, title, body, data, created_at, push, push_after) VALUES ($1, $2, 'team', 'team', $3, $4, '{}', $5, false, $5)`,
-        [uuid(), m.id, `${name} takıma katıldı`, `${t.name} büyüyor.`, new Date(d.clock.now())],
+        `INSERT INTO notifications (id, user_id, kind, category, title, body, data, created_at, push, push_after) VALUES ($1, $2, 'team', 'team', $3, $4, $6, $5, false, $5)`,
+        [uuid(), m.id, `${name} takıma katıldı`, `${t.name} büyüyor.`, new Date(d.clock.now()), JSON.stringify({ actorId: userId })],
       );
     }
   });
@@ -349,7 +351,7 @@ export async function clap(d: Deps, userId: string, feedId: string): Promise<{ c
   if (f.user_id === userId) throw badRequest('self_clap', 'Kendini alkışlayamazsın.');
   // Tek tepki alkış: ikinci dokunuş geri alır.
   const del = await d.db.query('DELETE FROM claps WHERE feed_id = $1 AND user_id = $2', [feedId, userId]);
-  if (!del.rowCount) await d.db.query('INSERT INTO claps (feed_id, user_id, created_at) VALUES ($1, $2, $3)', [feedId, userId, new Date(d.clock.now())]);
+  if (!del.rowCount) await d.db.query('INSERT INTO claps (feed_id, user_id, created_at) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [feedId, userId, new Date(d.clock.now())]);
   const n = await d.db.query<{ n: string }>('SELECT COUNT(*) n FROM claps WHERE feed_id = $1', [feedId]);
   return { claps: Number(n.rows[0]!.n), clappedByMe: !del.rowCount };
 }
