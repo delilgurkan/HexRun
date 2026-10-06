@@ -432,3 +432,16 @@ describe('güç ve can yardımcıları', () => {
     expect(duelHp(w, d)).toBe(0);
   });
 });
+
+describe('geç gelen halkalar', () => {
+  it('eski zamanlı halka erime saatini ve saldırı saatini geriye almaz', () => {
+    const w = worldWith('b', AREA, 60, at(1, 10), [player('a'), player('b')]);
+    w.eventsEnabled = false;
+    applyLoop(w, { playerId: 'b', cells: AREA, at: at(0, 10) });
+    expect(getCell(w, AREA[0]!).lastOwnerLoopAt).toBe(at(1, 10));
+    createDuel(w, 'd1', 'a', AREA, at(1, 11));
+    applyLoop(w, { playerId: 'a', cells: AREA, at: at(1, 12) });
+    applyLoop(w, { playerId: 'a', cells: AREA, at: at(1, 11, 30) });
+    expect(duelOf(w).lastAttackAt).toBe(at(1, 12));
+  });
+});

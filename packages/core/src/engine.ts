@@ -210,8 +210,11 @@ export function applyLoop(w: World, input: LoopInput): LoopOutcome {
       out.newCells.push(id);
       out.changedCells.add(id);
     } else if (c.ownerId === playerId) {
-      c.lastOwnerLoopAt = at;
-      c.decaySteps = 0;
+      // Geç gelen (içe aktarılan) bir halka erime saatini geriye almaz.
+      if (c.lastOwnerLoopAt === null || at >= c.lastOwnerLoopAt) {
+        c.lastOwnerLoopAt = at;
+        c.decaySteps = 0;
+      }
       out.changedCells.add(id);
       if (counterValue(c.ownerLoops, day) < RULES.OWNER_DAILY_LIMIT) {
         c.ownerLoops = bump(c.ownerLoops, day);
@@ -278,8 +281,10 @@ export function applyLoop(w: World, input: LoopInput): LoopOutcome {
     const prev = d.progress;
     d.attacks = bump(d.attacks, day);
     d.progress = round1(d.progress + RULES.ATTACK * mult);
-    d.lastAttackAt = at;
-    d.attackDecaySteps = 0;
+    if (d.lastAttackAt === null || at >= d.lastAttackAt) {
+      d.lastAttackAt = at;
+      d.attackDecaySteps = 0;
+    }
     out.changedDuels.add(d.id);
     if (d.firstCountedAt === null) {
       d.firstCountedAt = at;
