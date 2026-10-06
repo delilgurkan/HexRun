@@ -124,6 +124,8 @@ export interface MapCell {
   duel: 'defending' | 'attacking' | null;
   /** Düelloda en önde giden saldırganın ilerlemesi (yalnız sahibine ve o saldırgana). */
   progress: number | null;
+  /** Kuşatılan petekte saldırganın renk slotu (tarama bu renkte çizilir). */
+  attackerSlot: Slot | null;
   /** Son 7 günde eriyen güç (hayalet segment). */
   ghost: number;
 }

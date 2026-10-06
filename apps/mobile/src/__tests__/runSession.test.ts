@@ -126,7 +126,7 @@ describe('RunController', () => {
   it('halka kapanışı fetih anını tetikler (sert haptik + önizleme)', async () => {
     const own = cellOf(destination(center, 0, 50));
     const { c, haptics, location, keepAwake } = makeController([
-      { id: own, ownerId: 'me', power: 40, slot: 'keh', duel: null, progress: null, ghost: 0 },
+      { id: own, ownerId: 'me', power: 40, slot: 'keh', duel: null, progress: null, attackerSlot: null, ghost: 0 },
     ]);
     await c.start();
     expect(location.start).toHaveBeenCalled();

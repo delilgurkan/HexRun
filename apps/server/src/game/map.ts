@@ -162,14 +162,17 @@ export async function getMap(d: Deps, viewerId: string, bboxStr: string): Promis
       [viewerId, new Date(now)],
     )
   ).rows;
-  const duelOf = new Map<string, { role: 'defending' | 'attacking'; progress: number }>();
+  const duelOf = new Map<string, { role: 'defending' | 'attacking'; progress: number; attackerId: string }>();
   for (const du of duels) {
     const role = du.defender_id === viewerId ? 'defending' : 'attacking';
     for (const id of du.cells) {
       const cur = duelOf.get(id);
-      if (!cur || du.progress > cur.progress) duelOf.set(id, { role, progress: du.progress });
+      if (!cur || du.progress > cur.progress) duelOf.set(id, { role, progress: du.progress, attackerId: du.attacker_id });
     }
   }
+  const attackerSlots = new Map(
+    (await d.db.query<{ id: string; slot: string }>('SELECT id, slot FROM users WHERE id = ANY($1::uuid[])', [[...new Set(duels.map((x) => x.attacker_id))]])).rows.map((u) => [u.id, asSlot(u.slot)]),
+  );
   // Hayalet segment: son 7 günde eriyen güç. Zaman indeksiyle tarayıp görünen peteklere süzülür.
   const visible = new Set(inBox.map((r) => r.id));
   const ghosts = new Map<string, number>();
@@ -222,6 +225,8 @@ export async function getMap(d: Deps, viewerId: string, bboxStr: string): Promis
       slot: (colors.get(k) ?? 'keh') as Slot,
       duel: du?.role ?? null,
       progress: du ? Math.round(du.progress) : null,
+      // Haritada görünüyorsa saldırganın görüntü rengi, değilse imza rengi.
+      attackerSlot: du ? ((colors.get(du.attackerId) as Slot | undefined) ?? attackerSlots.get(du.attackerId) ?? null) : null,
       ghost: Math.round(ghosts.get(x.r.id) ?? 0),
     };
   });

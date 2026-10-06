@@ -234,6 +234,8 @@ describe('kuşatma, savunma, erime (zaman ilerledikçe)', () => {
     expect(map.attackersLast48h).toBe(1);
     expect(map.cells.filter((c) => c.duel === 'defending')).toHaveLength(30);
     expect(map.cells.find((c) => c.duel === 'defending')!.progress).toBe(60);
+    expect(map.cells.find((c) => c.duel === 'defending')!.attackerSlot).not.toBeNull();
+    expect(map.cells.find((c) => c.duel === null)!.attackerSlot).toBeNull();
     // Başkası düelloyu görmez
     const ali = await signup(ctx, 'Ali Veli', 'gok');
     const am = await get<MapResponse>(ctx, ali, `/v1/map?bbox=${bbox(C2)}`);

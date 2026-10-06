@@ -46,7 +46,7 @@ export function DuelSelectScreen() {
   const allowed = useMemo(() => new Set(region.data?.cells ?? []), [region.data?.cells]);
   const ownerCells = useMemo(() => {
     const c = mapCache().cells;
-    return (region.data?.cells ?? []).map((id) => c.get(id) ?? { id, ownerId: owner?.id ?? null, power: region.data?.avgPower ?? 0, slot: owner?.slot ?? null, duel: null, progress: null, ghost: 0 });
+    return (region.data?.cells ?? []).map((id) => c.get(id) ?? { id, ownerId: owner?.id ?? null, power: region.data?.avgPower ?? 0, slot: owner?.slot ?? null, duel: null, progress: null, attackerSlot: null, ghost: 0 });
   }, [region.data, owner]);
 
   const ids = useMemo(() => [...selected].sort(), [selected]);

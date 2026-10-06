@@ -10,6 +10,8 @@ export interface CellProps {
   owner: string | null;
   mine: boolean;
   siege: boolean;
+  /** Saldırganın rengi (boşsa mürekkep). */
+  siegeColor: string;
   attacking: boolean;
   power: number;
   hidden: boolean;
@@ -40,6 +42,7 @@ export function cellsToGeoJSON(
         owner: c.ownerId,
         mine: !!myId && c.ownerId === myId,
         siege: c.duel === 'defending',
+        siegeColor: c.duel === 'defending' && c.attackerSlot ? color(c.attackerSlot) : '',
         attacking: c.duel === 'attacking',
         power: c.power,
         hidden: !!c.ownerId && c.ownerId.startsWith('hidden:'),

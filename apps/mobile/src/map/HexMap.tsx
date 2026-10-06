@@ -122,7 +122,7 @@ export function HexMap(p: HexMapProps) {
             type="line"
             id="cells-siege-edge"
             filter={['==', ['get', 'siege'], true]}
-            style={{ lineColor: t.c.ink, lineWidth: 2.5, lineDasharray: [1.5, 1], lineOpacity: breath, lineOpacityTransition: { duration: MOTION.breathe / 2, delay: 0 } }}
+            style={{ lineColor: ['case', ['!=', ['get', 'siegeColor'], ''], ['get', 'siegeColor'], t.c.ink], lineWidth: 2.5, lineDasharray: [1.5, 1], lineOpacity: breath, lineOpacityTransition: { duration: MOTION.breathe / 2, delay: 0 } }}
           />
           <Layer
             type="line"
