@@ -527,3 +527,30 @@ export interface ShareCard {
 }
 
 export const API_VERSION = 'v1';
+
+/* ─────────────── Ek uç noktalar ─────────────── */
+
+/** PUT /v1/me/activity — koşu başlarken true, biterken false. */
+export interface ActivityRequest {
+  running: boolean;
+}
+
+/** POST /v1/events/:id/remind — "Hatırlat". */
+export interface RemindRequest {
+  on: boolean;
+}
+
+/** POST /v1/integrations/:provider/connect */
+export interface ConnectRequest {
+  device?: string;
+}
+export interface ConnectResponse {
+  /** OAuth sağlayıcılarında tarayıcıda açılacak adres; cihaz kaynaklarında null. */
+  url: string | null;
+}
+
+/** POST /v1/feed/:id/clap */
+export interface ClapResponse {
+  claps: number;
+  clappedByMe: boolean;
+}
