@@ -2,7 +2,6 @@ import {
   assignDisplayColors,
   cellCenter,
   cellsAreaM2,
-  components,
   eventWindow,
   EVENTS,
   HIDDEN_PLAYER_NAME,
@@ -11,7 +10,7 @@ import {
   neighbors,
   type ColorNode,
 } from '@hexrun/core';
-import { latLngToCell, polygonToCells } from 'h3-js';
+import { cellToParent, latLngToCell, polygonToCells } from 'h3-js';
 import { DAY_MS, circleTrack, cellsInPolygon, destination, haversineM, pathLengthM, polygonAreaM2, dayKey } from '@hexrun/core';
 import type { ActiveEvent, FirstLoopSuggestion, MapCell, MapPlayer, MapResponse, RegionDetail, Slot } from '@hexrun/contracts';
 import type { Deps } from '../deps.js';
@@ -74,29 +73,80 @@ interface OwnerRow {
   privacy_radius_m: number | null;
 }
 
+let evCache: { minute: number; windows: Array<ReturnType<typeof eventWindow>> } | null = null;
+let partCache: { minute: number; n: number } | null = null;
+
 export async function activeEventsDto(q: Queryable, now: number): Promise<ActiveEvent[]> {
   const today = dayKey(now);
-  const r = await q.query<{ n: string }>('SELECT COUNT(DISTINCT user_id) n FROM run_days WHERE day = $1', [today]);
-  const participants = Number(r.rows[0]?.n ?? 0);
-  return Object.values(EVENTS).map((e) => {
-    const w = eventWindow(e.id, now);
+  const minute = Math.floor(now / 60_000);
+  // Etkinlik pencereleri dakikada bir hesaplanır (her harita isteğinde değil).
+  if (!evCache || evCache.minute !== minute) evCache = { minute, windows: Object.values(EVENTS).map((e) => eventWindow(e.id, now)) };
+  if (!partCache || partCache.minute !== minute) {
+    const r = await q.query<{ n: string }>('SELECT COUNT(DISTINCT user_id) n FROM run_days WHERE day = $1', [today]);
+    partCache = { minute, n: Number(r.rows[0]?.n ?? 0) };
+  }
+  const participants = partCache.n;
+  return Object.values(EVENTS).map((e, i) => {
+    const w = evCache!.windows[i]!;
     return { ...e, active: w.active, endsInMin: w.endsInMin, startsInMin: w.startsInMin, participantsToday: w.active ? participants : 0 };
   });
+}
+
+/**
+ * Görüntüleyenden bağımsız harita tabanı (petekler, merkezler, farklı sahipli komşu çiftleri).
+ * Kısa ömürlü önbellek; bu süreçte yazılan petekler ilgili res-7 karolarını hemen geçersiz kılar.
+ */
+interface MapBase {
+  at: number;
+  parents: Set<string>;
+  rows: CellRow[];
+  centers: Map<string, { lat: number; lng: number }>;
+  borders: Array<[string, string]>;
+  truncated: boolean;
+}
+const BASE_TTL_MS = 5_000;
+const baseCache = new Map<string, MapBase>();
+
+export function invalidateMap(cells: Iterable<string>): void {
+  const ps = new Set<string>();
+  for (const c of cells) ps.add(cellToParent(c, 7));
+  if (!ps.size) return;
+  for (const [k, v] of baseCache) if ([...ps].some((p) => v.parents.has(p))) baseCache.delete(k);
+}
+
+async function loadBase(d: Deps, parents: string[], now: number): Promise<MapBase> {
+  const key = [...parents].sort().join(',');
+  const hit = baseCache.get(key);
+  if (hit && now - hit.at < BASE_TTL_MS && now >= hit.at) return hit;
+  const rows = (
+    await d.db.query<CellRow>(`SELECT id, owner_id, power FROM cells WHERE parent7 = ANY($1::text[]) AND owner_id IS NOT NULL LIMIT $2`, [parents, MAX_MAP_CELLS + 1])
+  ).rows;
+  const truncated = rows.length > MAX_MAP_CELLS;
+  const kept = rows.slice(0, MAX_MAP_CELLS);
+  const centers = new Map(kept.map((r) => [r.id, cellCenter(r.id)]));
+  const ownerOf = new Map(kept.map((r) => [r.id, r.owner_id]));
+  const borders: Array<[string, string]> = [];
+  for (const r of kept) {
+    for (const n of neighbors(r.id)) {
+      const o = ownerOf.get(n);
+      if (o && o !== r.owner_id && r.id < n) borders.push([r.id, n]);
+    }
+  }
+  const base: MapBase = { at: now, parents: new Set(parents), rows: kept, centers, borders, truncated };
+  if (baseCache.size > 500) baseCache.delete(baseCache.keys().next().value!);
+  baseCache.set(key, base);
+  return base;
 }
 
 export async function getMap(d: Deps, viewerId: string, bboxStr: string): Promise<MapResponse> {
   const now = d.clock.now();
   const b = parseBbox(bboxStr);
   const parents = parentsForBbox(b);
-  const rows = (
-    await d.db.query<CellRow>(
-      `SELECT id, owner_id, power FROM cells WHERE parent7 = ANY($1::text[]) AND owner_id IS NOT NULL LIMIT $2`,
-      [parents, MAX_MAP_CELLS + 1],
-    )
-  ).rows;
-  const truncated = rows.length > MAX_MAP_CELLS;
-  const inBox = rows.slice(0, MAX_MAP_CELLS).filter((r) => {
-    const c = cellCenter(r.id);
+  const base = await loadBase(d, parents, now);
+  const truncated = base.truncated;
+  const centers = base.centers;
+  const inBox = base.rows.filter((r) => {
+    const c = centers.get(r.id)!;
     return c.lat >= b.minLat && c.lat <= b.maxLat && c.lng >= b.minLng && c.lng <= b.maxLng;
   });
   const ownerIds = [...new Set(inBox.map((r) => r.owner_id))];
@@ -119,14 +169,19 @@ export async function getMap(d: Deps, viewerId: string, bboxStr: string): Promis
       if (!cur || du.progress > cur.progress) duelOf.set(id, { role, progress: du.progress });
     }
   }
-  const ghosts = new Map(
-    (
-      await d.db.query<{ cell_id: string; lost: number }>(
-        `SELECT cell_id, -SUM(power_delta)::float8 AS lost FROM cell_events WHERE kind = 'decay' AND at >= $2 AND cell_id = ANY($1::text[]) GROUP BY cell_id`,
-        [inBox.map((r) => r.id), new Date(now - 7 * DAY_MS)],
-      )
-    ).rows.map((g) => [g.cell_id, g.lost]),
-  );
+  // Hayalet segment: son 7 günde eriyen güç. Zaman indeksiyle tarayıp görünen peteklere süzülür.
+  const visible = new Set(inBox.map((r) => r.id));
+  const ghosts = new Map<string, number>();
+  for (const g of (
+    await d.db.query<{ cell_id: string; lost: number }>(
+      `SELECT e.cell_id, -SUM(e.power_delta)::float8 AS lost FROM cell_events e
+       WHERE e.kind = 'decay' AND e.at >= $2 AND e.cell_id IN (SELECT id FROM cells WHERE parent7 = ANY($1::text[]) AND owner_id IS NOT NULL)
+       GROUP BY e.cell_id`,
+      [parents, new Date(now - 7 * DAY_MS)],
+    )
+  ).rows) {
+    if (visible.has(g.cell_id)) ghosts.set(g.cell_id, g.lost);
+  }
 
   // Gizlilik: bölgedeki petekler "Gizli oyuncu"; kimlik opak.
   const hiddenId = (ownerId: string) => `hidden:${hmac(d.cfg.HASH_SECRET, `hidden|${ownerId}`).slice(0, 16)}`;
@@ -134,7 +189,7 @@ export async function getMap(d: Deps, viewerId: string, bboxStr: string): Promis
     if (r.owner_id === viewerId) return false;
     const o = owners.get(r.owner_id);
     if (!o || o.privacy_radius_m === null || o.privacy_lat === null || o.privacy_lng === null) return false;
-    return inZone({ center: { lat: o.privacy_lat, lng: o.privacy_lng }, radiusM: o.privacy_radius_m }, cellCenter(r.id));
+    return inZone({ center: { lat: o.privacy_lat, lng: o.privacy_lng }, radiusM: o.privacy_radius_m }, centers.get(r.id)!);
   };
 
   const shown = inBox.map((r) => ({ r, hidden: isHidden(r) }));
@@ -144,15 +199,14 @@ export async function getMap(d: Deps, viewerId: string, bboxStr: string): Promis
   const realOf = new Map(shown.map((x) => [key(x), x.r.owner_id]));
   const edges: Array<[string, string]> = [];
   const seenEdge = new Set<string>();
-  for (const [id, k] of ownerOfCell) {
-    for (const n of neighbors(id)) {
-      const k2 = ownerOfCell.get(n);
-      if (!k2 || k2 === k) continue;
-      const e = k < k2 ? `${k}|${k2}` : `${k2}|${k}`;
-      if (seenEdge.has(e)) continue;
-      seenEdge.add(e);
-      edges.push([k, k2]);
-    }
+  for (const [a, c2] of base.borders) {
+    const k = ownerOfCell.get(a);
+    const k2 = ownerOfCell.get(c2);
+    if (!k || !k2 || k === k2) continue;
+    const e = k < k2 ? `${k}|${k2}` : `${k2}|${k}`;
+    if (seenEdge.has(e)) continue;
+    seenEdge.add(e);
+    edges.push([k, k2]);
   }
   const nodes: ColorNode[] = [...realOf].map(([k, real]) => ({ id: k, slot: asSlot(owners.get(real)?.slot ?? 'keh') }));
   const colors = assignDisplayColors(viewerId, nodes, edges);
@@ -183,9 +237,20 @@ export async function getMap(d: Deps, viewerId: string, bboxStr: string): Promis
     const o = owners.get(realOf.get(k)!)!;
     let marker: { lat: number; lng: number } | null = null;
     if (!hidden) {
-      const big = components(ids)[0]!;
-      const pts = big.map(cellCenter);
-      marker = { lat: pts.reduce((s, p) => s + p.lat, 0) / pts.length, lng: pts.reduce((s, p) => s + p.lng, 0) / pts.length };
+      // İşaretçi oyuncunun kendi peteğinde durur: ağırlık merkezine en yakın petek (O(n)).
+      const pts = ids.map((id) => centers.get(id)!);
+      const mLat = pts.reduce((s, p) => s + p.lat, 0) / pts.length;
+      const mLng = pts.reduce((s, p) => s + p.lng, 0) / pts.length;
+      let best = pts[0]!;
+      let bd = Infinity;
+      for (const p of pts) {
+        const dd = (p.lat - mLat) ** 2 + (p.lng - mLng) ** 2;
+        if (dd < bd) {
+          bd = dd;
+          best = p;
+        }
+      }
+      marker = { lat: best.lat, lng: best.lng };
     }
     const name = o.display_name || o.username || 'Oyuncu';
     return {

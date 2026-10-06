@@ -96,6 +96,7 @@ CREATE TABLE cell_events (
 );
 CREATE INDEX cell_events_cell_idx ON cell_events (cell_id, at DESC);
 CREATE INDEX cell_events_at_idx ON cell_events (at);
+CREATE INDEX cell_events_decay_idx ON cell_events (at, cell_id) WHERE kind = 'decay';
 
 CREATE TABLE duels (
   id                 uuid PRIMARY KEY,

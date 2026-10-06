@@ -1,0 +1,22 @@
+{
+  "name": "@hexrun/web",
+  "private": true,
+  "version": "1.0.0",
+  "description": "HexRun public website (hexrun.co) and admin console. Static, zero runtime dependencies.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "validate": "html-validate \"dist/**/*.html\"",
+    "test": "npm run build && npm run validate && playwright test",
+    "images": "node scripts/render-images.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "1.56.1",
+    "html-validate": "^11.16.2"
+  },
+  "overrides": {
+    "playwright-core": "1.56.1"
+  }
+}

@@ -1,0 +1,18 @@
+<!--meta {
+  "title": "Open in HexRun",
+  "description": "This link opens in the HexRun app.",
+  "route": "/en/r/",
+  "alt": "/r/",
+  "noindex": true,
+  "scripts": ["/assets/js/applink.js"]
+} -->
+<div class="wrap">
+  <section class="applink" data-applink data-kind="r" data-scheme="{{appScheme}}" data-alt="/r/" data-play="{{playHref}}" data-appstore="{{appStoreHref}}" aria-labelledby="r-title">
+    <p class="label">HexRun link</p>
+    <h1 class="h2" id="r-title">This link opens in the app.</h1>
+    <p class="lead">Shared conquest cards and links are shown in the HexRun app. If it's installed, use the button below; if not, download it first.</p>
+    <p class="notice" data-missing hidden>This link looks incomplete. Ask the person who shared it to send it again.</p>
+    <p><a class="btn" data-open href="/en/r/" hidden>Open in HexRun</a></p>
+    {{storeLinks}}
+  </section>
+</div>

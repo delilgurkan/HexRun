@@ -11,6 +11,7 @@ import {
 } from '@hexrun/core';
 import type { Tx } from '../db.js';
 import { lockRegionOf, parent7Of } from '../lib/regions.js';
+import { invalidateMap } from './map.js';
 
 const d2n = (d: Date | null): number | null => (d ? d.getTime() : null);
 const n2d = (n: number | null): Date | null => (n === null ? null : new Date(n));
@@ -225,6 +226,7 @@ export async function persist(c: Tx, w: World, snap: Snapshot, now: number): Pro
       ],
     );
   }
+  invalidateMap(cells.map((x) => x.id));
   const newLosses = w.losses.filter((l) => !snap.losses.has(l));
   if (newLosses.length) {
     await c.query('INSERT INTO losses (cell_id, player_id, at) SELECT * FROM unnest($1::text[], $2::uuid[], $3::timestamptz[])', [

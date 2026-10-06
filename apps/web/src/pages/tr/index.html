@@ -1,0 +1,274 @@
+<!--meta {
+  "title": "HexRun — Koş. Halkayı kapat. Mahalleyi al.",
+  "description": "HexRun koşuyu bir toprak oyununa çevirir: başladığın noktaya geri dönerek halkayı kapat, içindeki petekler senin olsun. Rakiplerle düello, mahalle ligleri, saat entegrasyonları.",
+  "route": "/",
+  "alt": "/en/",
+  "scripts": ["/assets/js/waitlist.js"]
+} -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="label">Koşu + toprak oyunu · <span lang="en">iOS</span> ve <span lang="en">Android</span></p>
+      <div class="hero-mark">
+        {{iconLarge}}
+        <h1 class="wordmark" id="hero-title">hexrun</h1>
+      </div>
+      <p class="tagline">Koş. Halkayı kapat. Mahalleyi al.</p>
+      <p class="lead">Şehir petek petek bölünmüş bir harita. Koşuya başladığın noktaya geri döndüğünde halka kapanır ve içindeki petekler senin olur. Komşuların da koşuyor: alanını korumak için yine koşarsın.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#bekleme-listesi">Bekleme listesine katıl</a>
+        <a class="btn btn-ghost" href="#nasil-oynanir">Nasıl oynanır</a>
+      </div>
+      {{storeLinks}}
+    </div>
+    <figure class="hero-figure">
+      {{heroMap}}
+      <figcaption>Saha haritası · her renk bir oyuncu · taralı petekler düelloda</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section" id="nasil-oynanir" aria-labelledby="h-how">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">Nasıl oynanır</p>
+      <h2 class="h2" id="h-how">Üç hamle. Hepsi koşarken.</h2>
+      <p class="lead">Her şey halka ile olur. İz tek başına haritayı değiştirmez; başladığın yere dönmen gerekir.</p>
+    </div>
+    <ol class="steps">
+      <li class="step">
+        {{step.run}}
+        <span class="step-n">01</span>
+        <h3>Koş</h3>
+        <p class="muted">Uygulamayı aç, koşuya başla. Telefonun ya da saatin izini kaydeder; başlangıç noktası haritada bir üçgenle işaretlenir.</p>
+      </li>
+      <li class="step">
+        {{step.close}}
+        <span class="step-n">02</span>
+        <h3>Halkayı kapat</h3>
+        <p class="muted">Başladığın noktanın 50 metre yakınına dön. Halka orada kapanır; aynı koşuda her dönüş yeni bir halkadır. "85 m kaldı" gibi bir uyarı seni yönlendirir.</p>
+      </li>
+      <li class="step">
+        {{step.claim}}
+        <span class="step-n">03</span>
+        <h3>Fethet</h3>
+        <p class="muted">Halkanın içindeki boş petekler senin olur. Kendi peteklerin güçlenir. Rakibin alanını ise düelloyla alırsın.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section" id="kurallar" aria-labelledby="h-rules">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">Kurallar özeti</p>
+      <h2 class="h2" id="h-rules">Rakibi kadar koşan sahip kaybetmez.</h2>
+      <p class="lead">Güç petek başına, düello alan başına hesaplanır. Kural seti kısa ve herkes için aynı.</p>
+    </div>
+    <ul class="rule-list" role="list">
+      <li>
+        <h3 class="h3">Petek ve güç</h3>
+        <p>Şehir sabit altıgenlere bölünür, her biri yaklaşık 300 m². Her peteğin tek sahibi ve 0–100 arası gücü vardır. Boş petek 10 güçle senin olur; kendi peteğinin içinden geçen halka +10 güç verir (günde en çok 2 halka sayılır).</p>
+      </li>
+      <li>
+        <h3 class="h3">Düello</h3>
+        <p>Rakibin alanında 7–60 petek seçip düello başlatırsın. Alanı dolaşan her halka düello canını −10 düşürür, aynı düelloya günde en çok 2 halka sayılır. Can 0 olunca alanın tamamı sana geçer. Sahibin halkası savunur: can +20.</p>
+      </li>
+      <li>
+        <h3 class="h3">Erime</h3>
+        <p>Sahip 24 saat halka atmazsa peteğin gücü günde 5 erir. Saldırgan 48 saat gelmezse ilerlemesi günde 10 geri gider. Ceza değil hatırlatma: alanın seni bekliyor.</p>
+      </li>
+      <li>
+        <h3 class="h3">Çaylak dönemi</h3>
+        <p>İlk 14 gün aynı düelloya günde 3 halka sayılır, kısa halkalar da geçerli. Dolu bir semtte bile yer açmanın yolu bu.</p>
+      </li>
+    </ul>
+
+    <h3 class="h3 events-title" id="h-events">Etkinlikler: her çarpan farklı bir hamleye</h3>
+    <ul class="events" role="list" aria-labelledby="h-events">
+      <li class="event">
+        <span class="event-when">Her gün · 06:00–09:00</span>
+        <span class="h3">Sabah Avantajı</span>
+        <span class="event-x">2x</span>
+        <span class="muted small">Sahibin kendi peteklerinde güç kazanımı</span>
+      </li>
+      <li class="event">
+        <span class="event-when">Cumartesi–Pazar</span>
+        <span class="h3">Hafta Sonu Blitz</span>
+        <span class="event-x">2x</span>
+        <span class="muted small">Düelloda saldırı</span>
+      </li>
+      <li class="event">
+        <span class="event-when">Her gün · 18:00–21:00</span>
+        <span class="h3">Akşam Savunması</span>
+        <span class="event-x">1,5x</span>
+        <span class="muted small">Sahibin saldırganları geri itmesi</span>
+      </li>
+    </ul>
+    <p class="muted small rules-note">Çarpanlar üst üste binmez ve nerede koşarsan koş geçerlidir. Boş petek alımında çarpan yoktur. Saatten gelen koşularda çarpan, koşunun yapıldığı saate göre uygulanır.</p>
+  </div>
+</section>
+
+<section class="section" id="gizlilik" aria-labelledby="h-privacy">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">Adil oyun ve gizlilik</p>
+      <h2 class="h2" id="h-privacy">Rotan senin. Haritada yalnız petekler görünür.</h2>
+      <p class="lead">Bir koşu oyununda konum en hassas veridir. HexRun'ı buna göre tasarladık.</p>
+    </div>
+    <ul class="cards cards-3" role="list">
+      <li class="card card-inv">
+        <span class="label">Rotalar</span>
+        <h3 class="h3">Halkaların yalnız sana görünür</h3>
+        <p>Başkaları rotanı, başlangıç noktanı ya da koşu saatini görmez; yalnız peteklerin rengini ve gücünü görür.</p>
+      </li>
+      <li class="card">
+        <span class="label">Gizlilik bölgesi</span>
+        <h3 class="h3">Evinin çevresi: "Gizli oyuncu"</h3>
+        <p>Evinin çevresinde 200–800 m arası bir bölge seç. Bu bölgedeki peteklerde adın ve baş harfin görünmez; dairenin merkezi her hesapta rastgele kaydırılır ve başkalarına çizilmez.</p>
+      </li>
+      <li class="card">
+        <span class="label">Veri saklama</span>
+        <h3 class="h3">Ham GPS 30 gün</h3>
+        <p>Ham konum noktaları 30 gün saklanır, sonra yalnız petek listesine indirgenir. Verini uygulamadan indirebilir ya da hesabını silebilirsin.</p>
+      </li>
+      <li class="card">
+        <span class="label">Hile kontrolü</span>
+        <h3 class="h3">Şüpheli halka cezalandırılmaz, bekletilir</h3>
+        <p>Tempo koşu temposunun çok üstündeyse ya da GPS sıçradıysa halka incelemeye alınır. Koşun ve serin kaydedilir; harita sonuç gelene kadar değişmez.</p>
+      </li>
+      <li class="card">
+        <span class="label">Paylaşım</span>
+        <h3 class="h3">Fetih kartında harita yok</h3>
+        <p>Paylaşım kartı yalnız petek silüetini ve m²'yi gösterir. Sokak, rota ve rakip adı yoktur; gizlilik bölgesindeki petekler silüete girmez.</p>
+      </li>
+      <li class="card">
+        <span class="label">Erişilebilirlik</span>
+        <h3 class="h3">Renk körlüğüne uygun 8 renk</h3>
+        <ul class="palette" role="list" aria-label="Oyuncu renkleri: Kehribar, Kiremit, Limon, Zümrüt, Gök, Lacivert, Gül, Mercan">
+          <li class="swatch sw-keh"></li><li class="swatch sw-kir"></li><li class="swatch sw-lim"></li><li class="swatch sw-zum"></li><li class="swatch sw-gok"></li><li class="swatch sw-lac"></li><li class="swatch sw-gul"></li><li class="swatch sw-mer"></li>
+        </ul>
+        <p>Komşu bölgeler hiçbir zaman karışan iki renkle çizilmez. Renk tek başına bilgi taşımaz: kenar çizgisi, baş harf ve tarama da var.</p>
+      </li>
+    </ul>
+    <p class="muted small section-foot"><a href="/gizlilik/">Gizlilik politikasının tamamı</a> · <a href="/topluluk-kurallari/">Topluluk kuralları</a></p>
+  </div>
+</section>
+
+<section class="section" id="saatler" aria-labelledby="h-watches">
+  <div class="wrap split">
+    <div class="section-head">
+      <p class="label">Saatler ve uygulamalar</p>
+      <h2 class="h2" id="h-watches">Telefonu evde bırak, halkayı yine kapat.</h2>
+      <p class="lead">Saatinden ya da koşu uygulamandan gelen koşu, telefondaki koşuyla aynı kurallardan ve aynı hile kontrolünden geçer.</p>
+    </div>
+    <div>
+      <ul class="chips" role="list" aria-label="Desteklenen saatler ve uygulamalar">
+        <li class="chip">Garmin</li>
+        <li class="chip">Coros</li>
+        <li class="chip">Suunto</li>
+        <li class="chip">Polar</li>
+        <li class="chip">Apple Watch</li>
+        <li class="chip">Wear OS</li>
+        <li class="chip">Strava</li>
+      </ul>
+      <dl class="kv watch-kv">
+        <dt>Haritaya işlenir</dt><dd>bitişten 24 sa içinde</dd>
+        <dt>Daha eski koşu</dt><dd>yalnız istatistik</dd>
+        <dt>Aynı koşu iki kaynaktan</dt><dd>bir kez sayılır</dd>
+        <dt>Etkinlik çarpanı</dt><dd>koşunun saatine göre</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="takimlar" aria-labelledby="h-teams">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">Takımlar ve ligler</p>
+      <h2 class="h2" id="h-teams">Rakiplerin haritadaki komşuların.</h2>
+    </div>
+    <ul class="cards cards-3" role="list">
+      <li class="card">
+        <span class="label">Lig</span>
+        <h3 class="h3">Mahallenden başlar</h3>
+        <p>Lig yerel başlar; bireysel ve takım sıralaması, haftalık ve aylık dönem. Senin satırın her zaman görünür.</p>
+      </li>
+      <li class="card">
+        <span class="label">Takım</span>
+        <h3 class="h3">Toplam m² ile yarışır</h3>
+        <p>Takımlar üyelerin toplam alanıyla sıralanır. Savunma bireyseldir: takım düelloda yardım edemez, ev sahası yoktur.</p>
+      </li>
+      <li class="card">
+        <span class="label">Arkadaşlar</span>
+        <h3 class="h3">Akışta tek tepki: alkış</h3>
+        <p>Arkadaş akışı yalnız arkadaşlarına görünür, saatler yuvarlanır. Yorum yok; kim seni kuşatıyor, kim şu an koşuyor, onu görürsün.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" id="bekleme-listesi" aria-labelledby="h-wait">
+  <div class="wrap">
+    <div class="waitlist">
+      <div class="section-head">
+        <p class="label">Erken erişim</p>
+        <h2 class="h2" id="h-wait">İlk halkayı birlikte kapatalım.</h2>
+        <p class="lead">HexRun yakında App Store ve Google Play'de. E-postanı bırak, şehrinde açıldığında haber verelim.</p>
+      </div>
+      <form class="wl-form" id="waitlist-form" action="{{apiBase}}/v1/waitlist" method="post" data-api="{{apiBase}}" data-locale="tr" novalidate>
+        <label class="label" for="wl-email">E-posta adresin</label>
+        <div class="wl-row">
+          <input id="wl-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" placeholder="ad@ornek.com" aria-describedby="wl-consent">
+          <button class="btn" type="submit">Listeye katıl</button>
+        </div>
+        <p class="wl-status" id="wl-status" role="status" aria-live="polite"></p>
+        <p class="wl-consent" id="wl-consent">E-postanı yalnız HexRun'ın açılışını ve erken erişimi haber vermek için kullanırız; istediğin an listeden çıkabilirsin. Ayrıntılar: <a href="/gizlilik/#bekleme-listesi">Gizlilik politikası</a>.</p>
+      </form>
+      {{storeLinks}}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="sss" aria-labelledby="h-faq">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">SSS</p>
+      <h2 class="h2" id="h-faq">Sık sorulanlar</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Halka tam olarak ne zaman kapanır?</summary>
+        <div class="faq-a"><p>Koşunun başladığı noktanın 50 metre yakınına döndüğünde. Aynı koşuda başlangıca her dönüşün yeni bir halkadır. Halka kapanmazsa koşun ve serin yine kaydedilir, yalnız harita değişmez.</p></div>
+      </details>
+      <details>
+        <summary>Başkaları rotamı ya da evimi görebilir mi?</summary>
+        <div class="faq-a"><p>Hayır. Halkalar ve rotalar yalnız sahibine görünür; diğer oyuncular yalnız peteklerin rengini ve gücünü görür. Gizlilik bölgesindeki peteklerde adın yerine "Gizli oyuncu" yazar.</p></div>
+      </details>
+      <details>
+        <summary>Bisikletle ya da arabayla oynayabilir miyim?</summary>
+        <div class="faq-a"><p>Hayır. HexRun yürüyüş ve koşu için. Koşu temposunun çok üstündeki bölümler ve GPS sıçramaları halkayı incelemeye alır. Ayrıntılar <a href="/kosullar/">kullanım koşullarında</a>.</p></div>
+      </details>
+      <details>
+        <summary>Telefonsuz, yalnız saatle koşabilir miyim?</summary>
+        <div class="faq-a"><p>Evet. Garmin, Coros, Suunto, Polar, Apple Watch, Wear OS ya da Strava'dan gelen koşu, bittikten sonraki 24 saat içinde gelirse haritaya işlenir.</p></div>
+      </details>
+      <details>
+        <summary>Rakip peteğimi nasıl alır, ben nasıl korurum?</summary>
+        <div class="faq-a"><p>Rakip, alanını kapsayan bir düello başlatır ve alanı dolaşan halkalarla düello canını düşürür. Sen kendi alanında halka attıkça can +20 artar ve saldırgan geri itilir. Rakibi kadar koşan sahip kaybetmez.</p></div>
+      </details>
+      <details>
+        <summary>Takımım düelloda bana yardım edebilir mi?</summary>
+        <div class="faq-a"><p>Hayır. Düellolar bireyseldir. Takım, üyelerin toplam alanıyla ligde yarışır.</p></div>
+      </details>
+      <details>
+        <summary>Hangi şehirlerde oynanır?</summary>
+        <div class="faq-a"><p>Harita bütün dünyayı kapsayan sabit bir petek ızgarası; koştuğun her yerde oynayabilirsin. Ligler yerel başlar, bu yüzden rakiplerin önce mahallendekiler olur.</p></div>
+      </details>
+      <details>
+        <summary>Hesabımı ve verilerimi nasıl silerim?</summary>
+        <div class="faq-a"><p>Uygulamada <span class="path">Profil › Ayarlar › Hesabı sil</span>. Uygulamaya erişemiyorsan <a href="/hesap-silme/">hesap silme sayfasındaki</a> e-posta yolunu kullan.</p></div>
+      </details>
+    </div>
+  </div>
+</section>

@@ -1,4 +1,5 @@
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
+import compress from '@fastify/compress';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
@@ -50,6 +51,7 @@ export async function buildApp(d: Deps): Promise<FastifyInstance> {
     }
   });
 
+  await app.register(compress, { global: true, threshold: 2048 });
   await app.register(helmet, { contentSecurityPolicy: false });
   const origins = list(d.cfg.CORS_ORIGINS);
   await app.register(cors, { origin: origins.includes('*') ? true : origins, credentials: false });

@@ -1,0 +1,20 @@
+<!--meta {
+  "title": "Invite",
+  "description": "A friend invited you to HexRun. Open the invite in the app or download HexRun.",
+  "route": "/en/invite/",
+  "alt": "/invite/",
+  "noindex": true,
+  "scripts": ["/assets/js/applink.js"]
+} -->
+<div class="wrap">
+  <section class="applink" data-applink data-kind="invite" data-scheme="{{appScheme}}" data-alt="/invite/" data-play="{{playHref}}" data-appstore="{{appStoreHref}}" aria-labelledby="inv-title">
+    <p class="label">Invite</p>
+    <h1 class="h2" id="inv-title">You've been called to the neighbourhood.</h1>
+    <p class="lead">A friend invited you to HexRun. If the app is installed, open the invite with the button below; if not, download it first and then come back to this link.</p>
+    <p data-code-wrap hidden>Invite code: <span class="code" data-code></span></p>
+    <p class="notice" data-missing hidden>This link has no valid invite code. Ask your friend to send it again.</p>
+    <p><a class="btn" data-open href="/en/invite/" hidden>Open in HexRun</a></p>
+    {{storeLinks}}
+    <p class="muted small">If the app is installed, this link opens straight in HexRun on your phone.</p>
+  </section>
+</div>

@@ -1,0 +1,274 @@
+<!--meta {
+  "title": "HexRun — Run. Close the loop. Take the neighbourhood.",
+  "description": "HexRun turns your run into a territory game: return to where you started to close the loop and the hex cells inside become yours. Duels with rivals, neighbourhood leagues, watch integrations.",
+  "route": "/en/",
+  "alt": "/",
+  "scripts": ["/assets/js/waitlist.js"]
+} -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="label">Running + territory game · iOS and Android</p>
+      <div class="hero-mark">
+        {{iconLarge}}
+        <h1 class="wordmark" id="hero-title">hexrun</h1>
+      </div>
+      <p class="tagline">Run. Close the loop. Take the neighbourhood.</p>
+      <p class="lead">Your city is a map of hexagonal cells. Run back to where you started and the loop closes: every cell inside becomes yours. Your neighbours run too, so you keep running to hold your ground.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#waitlist">Join the waitlist</a>
+        <a class="btn btn-ghost" href="#how-it-works">How it works</a>
+      </div>
+      {{storeLinks}}
+    </div>
+    <figure class="hero-figure">
+      {{heroMap}}
+      <figcaption>Field map · every colour is a player · hatched cells are in a duel</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section" id="how-it-works" aria-labelledby="h-how">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">How it works</p>
+      <h2 class="h2" id="h-how">Three moves. All of them while running.</h2>
+      <p class="lead">Everything happens through loops. A trace alone never changes the map; you have to get back to your start.</p>
+    </div>
+    <ol class="steps">
+      <li class="step">
+        {{step.run}}
+        <span class="step-n">01</span>
+        <h3>Run</h3>
+        <p class="muted">Open the app and start a run. Your phone or watch records the trace; your start point is marked on the map with a triangle.</p>
+      </li>
+      <li class="step">
+        {{step.close}}
+        <span class="step-n">02</span>
+        <h3>Close the loop</h3>
+        <p class="muted">Come back within 50 metres of where you started. The loop closes there, and every return in the same run is a new loop. A cue like "85 m to go" guides you home.</p>
+      </li>
+      <li class="step">
+        {{step.claim}}
+        <span class="step-n">03</span>
+        <h3>Claim</h3>
+        <p class="muted">Empty cells inside the loop become yours and your own cells get stronger. A rival's ground is taken through a duel.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section" id="rules" aria-labelledby="h-rules">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">Rules at a glance</p>
+      <h2 class="h2" id="h-rules">An owner who runs as much as the rival never loses.</h2>
+      <p class="lead">Power is counted per cell, duels per area. The rule set is short and the same for everyone.</p>
+    </div>
+    <ul class="rule-list" role="list">
+      <li>
+        <h3 class="h3">Cells and power</h3>
+        <p>The city is split into fixed hexagons of about 300 m² each. Every cell has one owner and a power of 0–100. An empty cell becomes yours at power 10; a loop around your own cells adds +10 (up to 2 loops a day count).</p>
+      </li>
+      <li>
+        <h3 class="h3">Duels</h3>
+        <p>Pick 7–60 of a rival's cells and start a duel. Every loop around that area takes −10 off the duel's life, with up to 2 loops a day counting per duel. At zero the whole area is yours. The owner defends by looping it: life +20.</p>
+      </li>
+      <li>
+        <h3 class="h3">Decay</h3>
+        <p>If the owner skips loops for 24 hours, the cell loses 5 power a day. If an attacker stays away for 48 hours, their progress drops by 10 a day. A reminder, not a punishment.</p>
+      </li>
+      <li>
+        <h3 class="h3">Rookie period</h3>
+        <p>For your first 14 days, 3 loops a day count towards the same duel and short loops count too. That is how you make room in a crowded neighbourhood.</p>
+      </li>
+    </ul>
+
+    <h3 class="h3 events-title" id="h-events">Events: each multiplier boosts a different move</h3>
+    <ul class="events" role="list" aria-labelledby="h-events">
+      <li class="event">
+        <span class="event-when">Daily · 06:00–09:00</span>
+        <span class="h3">Morning Advantage</span>
+        <span class="event-x">2x</span>
+        <span class="muted small">Power gained by owners on their own cells</span>
+      </li>
+      <li class="event">
+        <span class="event-when">Saturday–Sunday</span>
+        <span class="h3">Weekend Blitz</span>
+        <span class="event-x">2x</span>
+        <span class="muted small">Attack in duels</span>
+      </li>
+      <li class="event">
+        <span class="event-when">Daily · 18:00–21:00</span>
+        <span class="h3">Evening Defence</span>
+        <span class="event-x">1.5x</span>
+        <span class="muted small">Owners pushing attackers back</span>
+      </li>
+    </ul>
+    <p class="muted small rules-note">Multipliers never stack and apply wherever you run. Claiming empty cells has no multiplier. For runs imported from a watch, the multiplier follows the time the run actually happened.</p>
+  </div>
+</section>
+
+<section class="section" id="privacy" aria-labelledby="h-privacy">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">Fair play and privacy</p>
+      <h2 class="h2" id="h-privacy">Your route is yours. The map only shows cells.</h2>
+      <p class="lead">In a running game, location is the most sensitive data there is. HexRun is designed around that.</p>
+    </div>
+    <ul class="cards cards-3" role="list">
+      <li class="card card-inv">
+        <span class="label">Routes</span>
+        <h3 class="h3">Only you see your loops</h3>
+        <p>Nobody else sees your route, start point or run times; they only see the colour and power of cells.</p>
+      </li>
+      <li class="card">
+        <span class="label">Privacy zone</span>
+        <h3 class="h3">Around your home: "Hidden player"</h3>
+        <p>Choose a 200–800 m zone around your home. Cells inside it never show your name or initials; the centre is randomly offset per account and the circle is never drawn for others.</p>
+      </li>
+      <li class="card">
+        <span class="label">Retention</span>
+        <h3 class="h3">Raw GPS for 30 days</h3>
+        <p>Raw location points are kept for 30 days, then reduced to a list of cells. You can export your data or delete your account from the app.</p>
+      </li>
+      <li class="card">
+        <span class="label">Anti-cheat</span>
+        <h3 class="h3">Suspicious loops are held, not punished</h3>
+        <p>If the pace is far beyond running pace or the GPS jumps, the loop goes to review. Your run and streak are saved; the map waits for the result.</p>
+      </li>
+      <li class="card">
+        <span class="label">Sharing</span>
+        <h3 class="h3">No map on the share card</h3>
+        <p>The card shows only the silhouette of your cells and the m². No streets, no route, no rival names, and cells in your privacy zone are left out.</p>
+      </li>
+      <li class="card">
+        <span class="label">Accessibility</span>
+        <h3 class="h3">8 colour-blind-safe colours</h3>
+        <ul class="palette" role="list" aria-label="Player colours: Amber, Vermilion, Lemon, Emerald, Sky, Navy, Rose, Coral">
+          <li class="swatch sw-keh"></li><li class="swatch sw-kir"></li><li class="swatch sw-lim"></li><li class="swatch sw-zum"></li><li class="swatch sw-gok"></li><li class="swatch sw-lac"></li><li class="swatch sw-gul"></li><li class="swatch sw-mer"></li>
+        </ul>
+        <p>Neighbouring territories are never drawn in two colours that can be confused. Colour never carries meaning alone: outlines, initials and hatching do too.</p>
+      </li>
+    </ul>
+    <p class="muted small section-foot"><a href="/en/privacy/">Full privacy policy</a> · <a href="/en/community-guidelines/">Community guidelines</a></p>
+  </div>
+</section>
+
+<section class="section" id="watches" aria-labelledby="h-watches">
+  <div class="wrap split">
+    <div class="section-head">
+      <p class="label">Watches and apps</p>
+      <h2 class="h2" id="h-watches">Leave the phone at home. Close the loop anyway.</h2>
+      <p class="lead">Runs from your watch or running app go through exactly the same rules and the same anti-cheat checks as runs recorded on the phone.</p>
+    </div>
+    <div>
+      <ul class="chips" role="list" aria-label="Supported watches and apps">
+        <li class="chip">Garmin</li>
+        <li class="chip">Coros</li>
+        <li class="chip">Suunto</li>
+        <li class="chip">Polar</li>
+        <li class="chip">Apple Watch</li>
+        <li class="chip">Wear OS</li>
+        <li class="chip">Strava</li>
+      </ul>
+      <dl class="kv watch-kv">
+        <dt>Counts on the map</dt><dd>within 24 h of finishing</dd>
+        <dt>Older runs</dt><dd>stats only</dd>
+        <dt>Same run from two sources</dt><dd>counted once</dd>
+        <dt>Event multiplier</dt><dd>by time of the run</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="teams" aria-labelledby="h-teams">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">Teams and leagues</p>
+      <h2 class="h2" id="h-teams">Your rivals are your neighbours on the map.</h2>
+    </div>
+    <ul class="cards cards-3" role="list">
+      <li class="card">
+        <span class="label">League</span>
+        <h3 class="h3">Starts in your neighbourhood</h3>
+        <p>Leagues start local, with individual and team rankings, weekly and monthly. Your own row is always visible.</p>
+      </li>
+      <li class="card">
+        <span class="label">Team</span>
+        <h3 class="h3">Ranked by total m²</h3>
+        <p>Teams are ranked by their members' combined territory. Defence is individual: teammates can't help in a duel and there is no home turf.</p>
+      </li>
+      <li class="card">
+        <span class="label">Friends</span>
+        <h3 class="h3">One reaction: applause</h3>
+        <p>The friends feed is visible to friends only and times are rounded. No comments; you see who is besieging you and who is running right now.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" id="waitlist" aria-labelledby="h-wait">
+  <div class="wrap">
+    <div class="waitlist">
+      <div class="section-head">
+        <p class="label">Early access</p>
+        <h2 class="h2" id="h-wait">Let's close the first loop together.</h2>
+        <p class="lead">HexRun is coming to the App Store and Google Play. Leave your email and we'll tell you when it opens in your city.</p>
+      </div>
+      <form class="wl-form" id="waitlist-form" action="{{apiBase}}/v1/waitlist" method="post" data-api="{{apiBase}}" data-locale="en" novalidate>
+        <label class="label" for="wl-email">Your email address</label>
+        <div class="wl-row">
+          <input id="wl-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" placeholder="you@example.com" aria-describedby="wl-consent">
+          <button class="btn" type="submit">Join the list</button>
+        </div>
+        <p class="wl-status" id="wl-status" role="status" aria-live="polite"></p>
+        <p class="wl-consent" id="wl-consent">We only use your email to tell you about HexRun's launch and early access; you can leave the list at any time. Details: <a href="/en/privacy/#waitlist">Privacy policy</a>.</p>
+      </form>
+      {{storeLinks}}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq" aria-labelledby="h-faq">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">FAQ</p>
+      <h2 class="h2" id="h-faq">Frequently asked</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>When exactly does a loop close?</summary>
+        <div class="faq-a"><p>When you come back within 50 metres of where the run started. Every return to the start in the same run is a new loop. If you never close one, your run and streak are still saved; only the map stays the same.</p></div>
+      </details>
+      <details>
+        <summary>Can other people see my route or my home?</summary>
+        <div class="faq-a"><p>No. Loops and routes are visible only to their owner; other players only see the colour and power of cells. Cells inside your privacy zone say "Hidden player" instead of your name.</p></div>
+      </details>
+      <details>
+        <summary>Can I play by bike or car?</summary>
+        <div class="faq-a"><p>No. HexRun is for walking and running. Stretches far beyond running pace and GPS jumps send a loop to review. See the <a href="/en/terms/">terms of use</a>.</p></div>
+      </details>
+      <details>
+        <summary>Can I run with just my watch?</summary>
+        <div class="faq-a"><p>Yes. A run from Garmin, Coros, Suunto, Polar, Apple Watch, Wear OS or Strava counts on the map if it arrives within 24 hours of finishing.</p></div>
+      </details>
+      <details>
+        <summary>How does a rival take my cells, and how do I defend?</summary>
+        <div class="faq-a"><p>A rival starts a duel over an area of yours and lowers its life with loops around it. Every loop you run around your own area adds +20 life and pushes the attacker back. An owner who runs as much as the rival never loses.</p></div>
+      </details>
+      <details>
+        <summary>Can my team help me in a duel?</summary>
+        <div class="faq-a"><p>No. Duels are individual. Teams compete in the league with their members' combined territory.</p></div>
+      </details>
+      <details>
+        <summary>Which cities can I play in?</summary>
+        <div class="faq-a"><p>The map is a fixed hex grid covering the whole world, so you can play wherever you run. Leagues start local, so your first rivals are in your neighbourhood.</p></div>
+      </details>
+      <details>
+        <summary>How do I delete my account and data?</summary>
+        <div class="faq-a"><p>In the app: <span class="path">Profile › Settings › Delete account</span>. If you can't access the app, use the email route on the <a href="/en/account-deletion/">account deletion page</a>.</p></div>
+      </details>
+    </div>
+  </div>
+</section>

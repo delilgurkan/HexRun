@@ -1,0 +1,70 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  core-server:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: hexrun
+          POSTGRES_PASSWORD: hexrun
+          POSTGRES_DB: hexrun_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U hexrun" --health-interval 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run build -w @hexrun/core && npm run build -w @hexrun/contracts
+      - run: npm run typecheck
+      - run: npm test -w @hexrun/core
+      - run: npm test -w @hexrun/server
+        env:
+          TEST_DATABASE_URL: postgres://hexrun:hexrun@localhost:5432/hexrun_test
+      - run: npm run build -w @hexrun/server
+      - name: Yük testi (duman)
+        run: npx tsx scripts/load.ts
+        working-directory: apps/server
+        env:
+          LOAD_DATABASE_URL: postgres://hexrun:hexrun@localhost:5432/hexrun_test
+          LOAD_SECONDS: "5"
+          LOAD_PLAYERS: "20"
+      - run: npm audit --omit=dev --audit-level=high
+
+  web:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: apps/web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+
+  mobile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci && npm run build -w @hexrun/core && npm run build -w @hexrun/contracts
+      - run: npm ci
+        working-directory: apps/mobile
+      - run: npx tsc --noEmit
+        working-directory: apps/mobile
+      - run: npm test -- --ci
+        working-directory: apps/mobile
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f apps/server/Dockerfile -t hexrun-api .

@@ -1,0 +1,24 @@
+# Yerel geliştirme: docker compose up --build
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: hexrun
+      POSTGRES_PASSWORD: hexrun
+      POSTGRES_DB: hexrun
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hexrun"]
+      interval: 5s
+      retries: 10
+  api:
+    build: { context: ., dockerfile: apps/server/Dockerfile }
+    depends_on: { db: { condition: service_healthy } }
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://hexrun:hexrun@db:5432/hexrun
+      PUSH_ENABLED: "false"
+    ports: ["8080:8080"]
+volumes:
+  pgdata:

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="{{csp}}">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<title>HexRun yönetim</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/admin/admin.css">
+<script src="/admin/admin.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">İçeriğe geç</a>
+<header class="bar">
+  <div class="bar-in">
+    <p class="brand">{{icon}}<span class="brand-word">hexrun</span><span class="brand-tag">yönetim</span></p>
+    <div class="session" id="session" hidden>
+      <span class="api" id="session-api"></span>
+      <button class="btn btn-ghost" type="button" id="logout">Çıkış yap</button>
+    </div>
+  </div>
+</header>
+<main id="main" tabindex="-1" data-default-api="{{adminApiBase}}">
+  <section class="login" id="login" aria-labelledby="login-title">
+    <h1 id="login-title">Yönetici girişi</h1>
+    <p class="muted">Yönetici bearer token'ını yapıştır. Token yalnız bu sekmenin oturumunda (sessionStorage) tutulur; sekmeyi kapatınca silinir.</p>
+    <form id="login-form" class="form" novalidate>
+      <div class="field">
+        <label for="api-base">API adresi</label>
+        <input id="api-base" name="api" type="url" required autocomplete="off" spellcheck="false" inputmode="url">
+      </div>
+      <div class="field">
+        <label for="token">Bearer token</label>
+        <input id="token" name="token" type="password" required autocomplete="new-password" spellcheck="false">
+      </div>
+      <p class="msg" id="login-msg" role="alert"></p>
+      <button class="btn" type="submit" id="login-btn">Giriş yap</button>
+    </form>
+  </section>
+
+  <div id="app" hidden>
+    <section aria-labelledby="metrics-title" class="block">
+      <h1 class="visually-hidden">HexRun yönetim paneli</h1>
+      <h2 id="metrics-title" class="label">Bugün</h2>
+      <dl class="stats" id="metrics" aria-busy="true"></dl>
+      <p class="msg" id="metrics-msg" role="status"></p>
+    </section>
+
+    <section aria-labelledby="queue-title" class="block">
+      <div class="queue-head">
+        <h2 id="queue-title">İnceleme kuyruğu <span class="count" id="queue-count"></span></h2>
+        <button class="btn btn-ghost" type="button" id="refresh">Yenile</button>
+      </div>
+      <p class="muted small">Hız ya da GPS tutarsızlığı nedeniyle bekletilen halkalar. Onaylanan halka haritaya işlenir; reddedilen halkada harita değişmez, koşu ve seri kayıtlı kalır.</p>
+      <p class="live visually-hidden" id="live" role="status" aria-live="polite"></p>
+      <div id="queue-state" class="state" role="status"></div>
+      <ul class="reviews" id="reviews" role="list"></ul>
+    </section>
+  </div>
+</main>
+
+<dialog id="confirm" aria-labelledby="confirm-title" aria-describedby="confirm-body">
+  <form method="dialog" class="dialog-form">
+    <h2 id="confirm-title">Emin misin?</h2>
+    <p id="confirm-body"></p>
+    <div class="dialog-actions">
+      <button class="btn btn-ghost" value="cancel" type="submit" id="confirm-cancel">Vazgeç</button>
+      <button class="btn" value="ok" type="submit" id="confirm-ok">Onayla</button>
+    </div>
+  </form>
+</dialog>
+</body>
+</html>

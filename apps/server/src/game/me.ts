@@ -24,6 +24,7 @@ import { regionName } from '../lib/regions.js';
 import { asSlot, getUser, toMe } from './players.js';
 import { badgeDto, monthDistance, ownedBadges, playerStats, streakFor, territoryM2 } from './progress.js';
 import { getLeague } from './social.js';
+import { invalidateMap } from './map.js';
 
 const RESERVED = new Set(['admin', 'hexrun', 'destek', 'support', 'root', 'moderator', 'gizli', 'gizlioyuncu', 'sistem', 'null', 'undefined']);
 export const USERNAME_RE = /^[a-z0-9_.]{3,20}$/;
@@ -264,6 +265,8 @@ export async function deleteAccount(d: Deps, userId: string): Promise<void> {
         }
       }
     }
+    const released = (await c.query<{ id: string }>('SELECT id FROM cells WHERE owner_id = $1', [userId])).rows.map((x) => x.id);
+    invalidateMap(released);
     await c.query(
       `UPDATE cells SET owner_id = NULL, power = 0, owned_since = NULL, last_owner_loop_at = NULL, decay_steps = 0, owner_loops_day = NULL, owner_loops_count = 0 WHERE owner_id = $1`,
       [userId],

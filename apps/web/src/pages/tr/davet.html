@@ -1,0 +1,20 @@
+<!--meta {
+  "title": "Davet",
+  "description": "Bir arkadaşın seni HexRun'a davet etti. Daveti uygulamada aç ya da HexRun'ı indir.",
+  "route": "/invite/",
+  "alt": "/en/invite/",
+  "noindex": true,
+  "scripts": ["/assets/js/applink.js"]
+} -->
+<div class="wrap">
+  <section class="applink" data-applink data-kind="invite" data-scheme="{{appScheme}}" data-alt="/en/invite/" data-play="{{playHref}}" data-appstore="{{appStoreHref}}" aria-labelledby="inv-title">
+    <p class="label">Davet</p>
+    <h1 class="h2" id="inv-title">Seni mahalleye çağırıyorlar.</h1>
+    <p class="lead">Bir arkadaşın seni HexRun'a davet etti. Uygulama yüklüyse daveti aşağıdaki düğmeyle aç; yüklü değilse önce indir, sonra bu bağlantıya geri dön.</p>
+    <p data-code-wrap hidden>Davet kodu: <span class="code" data-code></span></p>
+    <p class="notice" data-missing hidden>Bu bağlantıda geçerli bir davet kodu yok. Bağlantıyı arkadaşından tekrar iste.</p>
+    <p><a class="btn" data-open href="/invite/" hidden>HexRun'da aç</a></p>
+    {{storeLinks}}
+    <p class="muted small">Uygulama yüklüyse bu bağlantı telefonunda doğrudan HexRun'da açılır.</p>
+  </section>
+</div>

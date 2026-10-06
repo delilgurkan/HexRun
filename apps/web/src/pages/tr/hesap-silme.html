@@ -1,0 +1,55 @@
+<!--meta {
+  "title": "Hesap silme",
+  "description": "HexRun hesabını ve verilerini nasıl silersin: uygulamada Profil › Ayarlar › Hesabı sil, uygulamaya erişemiyorsan e-posta ile. Silinen ve saklanan veriler.",
+  "route": "/hesap-silme/",
+  "alt": "/en/account-deletion/"
+} -->
+<div class="wrap">
+  <header class="page-head">
+    <p class="label">HexRun · {{company.name}}</p>
+    <h1>Hesabını ve verilerini sil</h1>
+    <p class="lead">HexRun hesabını istediğin an silebilirsin. Silme kalıcıdır: petek, düello, rozet ve sıralama geçmişin geri getirilemez.</p>
+  </header>
+  <div class="prose">
+    <h2 id="uygulamada">Uygulamadan sil (önerilen)</h2>
+    <ol class="steps-ol">
+      <li><span>HexRun uygulamasını aç ve haritadaki avatarına dokunarak <strong>Profil</strong>'e git.</span></li>
+      <li><span><strong>Ayarlar</strong>'ı aç.</span></li>
+      <li><span>En alttaki <strong>Hesabı sil</strong>'e dokun.</span></li>
+      <li><span>Ne silineceğini gösteren özeti oku ve onayla. İstersen önce <strong>Verilerimi indir</strong> ile verinin bir kopyasını al.</span></li>
+    </ol>
+    <p>Kısaca: <span class="path">Profil › Ayarlar › Hesabı sil</span></p>
+    <p>Onayladığında oturumun kapanır ve silme işlemi başlar.</p>
+
+    <h2 id="eposta">Uygulamaya erişemiyorsan: e-posta ile</h2>
+    <p>Telefonunu kaybettiysen veya uygulamayı artık yükleyemiyorsan {{email.kvkk}} adresine yaz:</p>
+    <ul>
+      <li>Konu: <strong>Hesap silme talebi</strong></li>
+      <li>Hesabına kayıtlı e-posta adresinden gönder ve kullanıcı adını yaz.</li>
+      <li>Apple veya Google ile giriş yaptıysan, o hesabın e-posta adresini belirt.</li>
+    </ul>
+    <p>Hesabın sana ait olduğunu doğrulamak için ek bilgi isteyebiliriz. Doğrulamadan sonra talebini en geç 30 gün içinde yerine getirir ve sana bildiririz.</p>
+
+    <h2 id="silinenler">Neler silinir</h2>
+    <ul>
+      <li>Hesap ve profil bilgileri: kullanıcı adı, görünen ad, e-posta, giriş bağlantıları</li>
+      <li>Koşular, ham GPS izleri, halkalar ve petek listeleri</li>
+      <li>Petek sahiplikleri ve düellolar: petekler boşa düşer, açık düellolar kapanır</li>
+      <li>Gizlilik bölgesi, bildirim tercihleri ve push jetonları</li>
+      <li>Arkadaşlıklar, takım üyeliği, alkışlar ve akış girdileri</li>
+      <li>Saat ve uygulama bağlantıları (Garmin, Coros, Suunto, Polar, Apple Sağlık, Wear OS, Strava) ve erişim jetonları</li>
+    </ul>
+
+    <h2 id="saklananlar">Neler, ne kadar saklanır</h2>
+    <ul>
+      <li>Veriler silme talebinden sonra en geç 30 gün içinde sistemlerimizden silinir veya anonim hâle getirilir. Yedeklerden silinme en geç <mark class="ph">[YEDEK SAKLAMA SÜRESİ]</mark> sürer.</li>
+      <li>Kimliğinle ilişkilendirilemeyen toplu istatistikler (ör. "bu hafta İstanbul'da koşulan toplam km") anonim olduğu için kalabilir.</li>
+      <li>Kanunen saklamakla yükümlü olduğumuz kayıtlar (ör. güvenlik kayıtları, yasal talepler) yalnız ilgili süre boyunca saklanır.</li>
+      <li>Hile nedeniyle kapatılan hesapların, yeni hesapla tekrarı önlemek için gereken asgari kaydı <mark class="ph">[HİLE KAYDI SAKLAMA SÜRESİ]</mark> boyunca saklanabilir.</li>
+    </ul>
+
+    <h2 id="kismi">Hesabı silmeden veri silmek</h2>
+    <p>Hesabını silmeden yalnız belirli verilerin (ör. bir koşunun veya bir saat bağlantısının) silinmesini istiyorsan {{email.kvkk}} adresine yaz; talebini aynı süreler içinde yerine getiririz.</p>
+    <p class="muted small">Ayrıntılar için <a href="/gizlilik/">Gizlilik politikası</a>. <a href="/en/account-deletion/" hreflang="en" lang="en">Read in English</a>.</p>
+  </div>
+</div>

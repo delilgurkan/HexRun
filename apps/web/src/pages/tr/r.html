@@ -1,0 +1,18 @@
+<!--meta {
+  "title": "HexRun'da aç",
+  "description": "Bu bağlantı HexRun uygulamasında açılır.",
+  "route": "/r/",
+  "alt": "/en/r/",
+  "noindex": true,
+  "scripts": ["/assets/js/applink.js"]
+} -->
+<div class="wrap">
+  <section class="applink" data-applink data-kind="r" data-scheme="{{appScheme}}" data-alt="/en/r/" data-play="{{playHref}}" data-appstore="{{appStoreHref}}" aria-labelledby="r-title">
+    <p class="label">HexRun bağlantısı</p>
+    <h1 class="h2" id="r-title">Bu bağlantı uygulamada açılır.</h1>
+    <p class="lead">Paylaşılan fetih kartları ve bağlantılar HexRun uygulamasında görüntülenir. Uygulama yüklüyse aşağıdaki düğmeyi kullan; değilse önce indir.</p>
+    <p class="notice" data-missing hidden>Bu bağlantı eksik görünüyor. Paylaşan kişiden tekrar iste.</p>
+    <p><a class="btn" data-open href="/r/" hidden>HexRun'da aç</a></p>
+    {{storeLinks}}
+  </section>
+</div>
