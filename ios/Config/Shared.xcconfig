@@ -4,8 +4,8 @@ API_BASE_URL = https:/$()/api.hexrun.co
 MAP_STYLE_URL = https:/$()/tiles.openfreemap.org/styles/positron
 MAP_STYLE_URL_DARK = https:/$()/tiles.openfreemap.org/styles/dark
 // Google Sign-In iOS istemci kimliği ve ters çevrilmiş URL şeması (Google Cloud Console).
-GOOGLE_CLIENT_ID =
-GOOGLE_REVERSED_CLIENT_ID = com.googleusercontent.apps.placeholder
+GOOGLE_CLIENT_ID = 657784947163-lhgjccu4ou8hpjld6rtudvaev9ghi47c.apps.googleusercontent.com
+GOOGLE_REVERSED_CLIENT_ID = com.googleusercontent.apps.657784947163-lhgjccu4ou8hpjld6rtudvaev9ghi47c
 DEVELOPMENT_TEAM =
 MARKETING_VERSION = 1.0.0
 CURRENT_PROJECT_VERSION = 1
