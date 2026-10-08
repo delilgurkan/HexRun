@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="hex_bg_dark">#0F1312</color>
+    <color name="hex_bg_light">#F7F6F1</color>
+    <color name="hex_ink_dark">#F2F1EA</color>
+    <color name="hex_keh">#E69F00</color>
+</resources>

@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import javax.inject.Inject
 
 plugins {
     id("com.android.application")
@@ -54,7 +55,7 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".debug"
+            // Paket adı sabit kalır: tek google-services.json ve tek uygulama bağlantısı doğrulaması.
             versionNameSuffix = "-debug"
         }
         release {

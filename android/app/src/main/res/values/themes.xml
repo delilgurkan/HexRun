@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Compose çizer; pencere yalnız açılış rengi ve sistem çubukları için. -->
+    <style name="Theme.HexRun" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/hex_bg_light</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>
