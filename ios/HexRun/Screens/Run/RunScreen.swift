@@ -183,7 +183,6 @@ struct RunScreen: View {
             .accessibilityHint(S.run.unlockHint)
             .accessibilityAddTraits(.isButton)
             .accessibilityAction { run.setLocked(false) }
-            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("lock-overlay")
     }
 

@@ -21,7 +21,6 @@ struct SummaryScreen: View {
                             HXButton(S.summary.share, icon: .share, big: true) { shareId = IdentifiedString(id: s.id) }
                         }
                         HXButton(S.summary.toMap, kind: s.totalGainedAreaM2 > 0 ? .secondary : .primary, big: true) { done() }
-                            .accessibilityElement(children: .contain)
                             .accessibilityIdentifier("summary-done")
                     }
                 }) {
