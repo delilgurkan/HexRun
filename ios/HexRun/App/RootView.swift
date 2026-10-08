@@ -50,8 +50,8 @@ struct MainTabs: View {
     @Environment(\.theme) private var t
 
     var body: some View {
-        @Bindable var router = router
-        @Bindable var env = env
+        @Bindable var router = self.router
+        @Bindable var env = self.env
         TabView(selection: $router.tab) {
             NavigationStack(path: $router.mapPath) {
                 MapScreen(app: app).navigationDestination(for: Route.self) { RouteView(route: $0) }

@@ -185,14 +185,15 @@ struct PermissionsScreen: View {
     private func done() { app.prefs.permissionsDone = true }
 
     private func permCard<A: View>(_ icon: IconName, _ title: String, _ why: String, status: String?, @ViewBuilder action: () -> A) -> some View {
-        Card {
+        let actionView = action()
+        return Card {
             HStack(spacing: 12) {
                 Icon(icon).frame(width: 40, height: 40).background(Circle().fill(t.c.surf2))
                 Text(title).hx(.title2)
             }
             Text(why).hx(.body, tone: 2)
             if let status { Text(status).hx(.data, tone: 2) }
-            action()
+            actionView
         }
     }
 }

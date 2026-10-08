@@ -37,7 +37,7 @@ final class LocationService: NSObject, LocationProvider, CLLocationManagerDelega
     /// Önce "kullanırken", sonra "her zaman" (arka plan) izni. Gerekçe ekranından sonra çağrılır.
     func requestPermission() async -> LocationPermission {
         if permission == .unknown {
-            _ = await withCheckedContinuation { c in
+            _ = await withCheckedContinuation { (c: CheckedContinuation<LocationPermission, Never>) in
                 authWaiters.append(c)
                 manager.requestWhenInUseAuthorization()
             }
@@ -51,7 +51,7 @@ final class LocationService: NSObject, LocationProvider, CLLocationManagerDelega
     /// Tek seferlik güncel konum (harita merkezi, gizlilik evi).
     func currentLocation() async -> CLLocation? {
         guard permission == .whenInUse || permission == .always else { return nil }
-        return await withCheckedContinuation { c in
+        return await withCheckedContinuation { (c: CheckedContinuation<CLLocation?, Never>) in
             oneShot.append(c)
             manager.requestLocation()
         }

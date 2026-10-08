@@ -127,7 +127,7 @@ struct EmailScreen: View {
     var body: some View {
         @Bindable var m = model
         HXScreen(title: m.step == .email ? S.auth.emailTitle : S.auth.codeTitle, large: true,
-                 onBack: m.step == .code ? { m.step = .email } : nil) {
+                 onBack: m.step == .code ? { m.step = .email } : nil, footer: {
             if m.step == .email {
                 HXButton(S.auth.sendCode, big: true, loading: m.busy, disabled: m.email.isEmpty) { Task { await m.send() } }
                     .accessibilityIdentifier("email-send")
@@ -136,7 +136,7 @@ struct EmailScreen: View {
                     .accessibilityIdentifier("email-verify")
                 HXButton(S.auth.resend, kind: .ghost) { Task { await m.send() } }
             }
-        } content: {
+        }) {
             if m.step == .email {
                 Text(S.auth.emailBody).hx(.body, tone: 2)
                 HXTextField(placeholder: S.auth.emailPlaceholder, text: $m.email)
@@ -181,10 +181,10 @@ struct ProfileSetupScreen: View {
 
     var body: some View {
         @Bindable var m = model
-        HXScreen(title: S.profileSetup.title, large: true, showBack: false) {
+        HXScreen(title: S.profileSetup.title, large: true, showBack: false, footer: {
             HXButton(S.profileSetup.submit, big: true, loading: m.busy, disabled: !m.ok) { Task { await m.submit() } }
                 .accessibilityIdentifier("profile-submit")
-        } content: {
+        }) {
             SectionTitle(S.profileSetup.username)
             HStack {
                 Text("@").hx(.title2, tone: 3)

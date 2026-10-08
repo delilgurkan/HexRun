@@ -94,7 +94,7 @@ class RunController(
 
     private fun deps() = SessionDeps(log, uuid, now, persistEveryMs)
 
-    private fun publish() {
+    private fun publish(forceWatch: Boolean = false) {
         val s = session
         if (s == null) {
             _state.update { it.copy(active = false, snap = null, trace = emptyList(), previewRing = null, closingPreview = null) }
@@ -119,7 +119,7 @@ class RunController(
             )
         }
         val t = now()
-        if (t - lastWatchPublish >= 1000) {
+        if (forceWatch || t - lastWatchPublish >= 1000) {
             lastWatchPublish = t
             watch.publish(hudOf(snap, preview))
         }
@@ -226,18 +226,28 @@ class RunController(
         scope.launch { lock.withLock { publish() } }
     }
 
-    fun pause() = scope.launch { lock.withLock { session?.pause(); publish() } }
-    fun resume() = scope.launch { lock.withLock { session?.resume(); publish() } }
+    fun pause() = scope.launch { lock.withLock { session?.pause(); publish(forceWatch = true) } }
+    fun resume() = scope.launch { lock.withLock { session?.resume(); publish(forceWatch = true) } }
     fun setLocked(locked: Boolean) = _state.update { it.copy(locked = locked) }
     fun clearRecovered() = _state.update { it.copy(recovered = false) }
     fun consumeFinished() = _state.update { it.copy(finishedRunId = null) }
 
-    /** Saatten gelen komut. */
+    /**
+     * Saatten gelen komut. Süreç yeni başladıysa önce koşu günlükten geri yüklenir; komuttan
+     * hemen sonra güncel HUD yayımlanır.
+     */
     fun onWatchCommand(c: WatchCommand) {
-        when (c.action) {
-            "pause" -> pause()
-            "resume" -> resume()
-            "finish" -> scope.launch { finish() }
+        scope.launch {
+            if (session == null) recover()
+            if (session == null) {
+                watch.publish(WatchHud(state = "idle", ts = now()))
+                return@launch
+            }
+            when (c.action) {
+                "pause" -> lock.withLock { session?.pause(); publish(forceWatch = true) }
+                "resume" -> lock.withLock { session?.resume(); publish(forceWatch = true) }
+                "finish" -> finish()
+            }
         }
     }
 

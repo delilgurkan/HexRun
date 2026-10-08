@@ -15,22 +15,22 @@ final class AppEnvironment {
     let router = Router()
     let run: RunController
     @ObservationIgnored let location: LocationService
-    @ObservationIgnored let haptics = Haptics()
-    @ObservationIgnored let push = PushService()
-    @ObservationIgnored let watch = WatchBridge()
-    @ObservationIgnored let network = NetworkMonitor()
+    @ObservationIgnored let haptics: Haptics
+    @ObservationIgnored let push: PushService
+    @ObservationIgnored let watch: WatchBridge
+    @ObservationIgnored let network: NetworkMonitor
     let mock: Bool
     /// Koşu konum izni olmadan başlatılmak istendi (uyarı).
     var showRunLockedAlert = false
     var booted = false
 
     private init() {
-        mock = AppConfig.uiTestMockAPI
+        let isMock = AppConfig.uiTestMockAPI
         let tokens: TokenStore
         let kv: KeyValueStore
         let client: APIClient
         let runStore: RunStore
-        if mock {
+        if isMock {
             tokens = MemoryTokenStore()
             kv = MemoryKeyValueStore()
             client = MockBackend.makeClient(tokens: tokens)
@@ -43,13 +43,22 @@ final class AppEnvironment {
         }
         let api = HexRunAPI(client: client)
         let queue = RunQueue(kv: kv, submit: { try await api.submitRun($0) })
+        let loc = LocationService()
+        let hap = Haptics()
+        let bridge = WatchBridge()
+        let provider: LocationProvider = isMock ? SimulatedLocation() : loc
+        let controller = RunController(store: runStore, location: provider, haptics: hap, awake: ScreenAwakeService(), queue: queue)
         app = AppModel(api: api, kv: kv, queue: queue)
-        location = LocationService()
-        let provider: LocationProvider = mock ? SimulatedLocation() : location
-        run = RunController(store: runStore, location: provider, haptics: haptics, awake: ScreenAwakeService(), queue: queue)
-        run.mirror = watch
-        run.device = UIDevice.current.model
-        run.onActivity = { running in Task { try? await api.activity(running: running) } }
+        location = loc
+        haptics = hap
+        push = PushService()
+        watch = bridge
+        network = NetworkMonitor()
+        run = controller
+        mock = isMock
+        controller.mirror = bridge
+        controller.device = UIDevice.current.model
+        controller.onActivity = { running in Task { try? await api.activity(running: running) } }
         push.api = api
     }
 

@@ -15,7 +15,7 @@ struct SummaryScreen: View {
         Group {
             if let s = model.summary {
                 let v = SummaryPresenter.variant(s)
-                HXScreen(title: S.summary.done, showBack: false) {
+                HXScreen(title: S.summary.done, showBack: false, footer: {
                     if v != .review {
                         if s.totalGainedAreaM2 > 0 {
                             HXButton(S.summary.share, icon: .share, big: true) { shareId = IdentifiedString(id: s.id) }
@@ -23,7 +23,7 @@ struct SummaryScreen: View {
                         HXButton(S.summary.toMap, kind: s.totalGainedAreaM2 > 0 ? .secondary : .primary, big: true) { done() }
                             .accessibilityIdentifier("summary-done")
                     }
-                } content: {
+                }) {
                     SummaryContent(s: s, model: model, onDone: done, onMakeLoop: {
                         router.cover = nil
                         Task { await env.startRun() }
@@ -36,9 +36,9 @@ struct SummaryScreen: View {
                     NavigationStack { ShareScreen(app: env.app, runId: r.id) }.environment(\.theme, t)
                 }
             } else {
-                HXScreen(title: S.summary.done, showBack: false) {
+                HXScreen(title: S.summary.done, showBack: false, footer: {
                     HXButton(S.summary.toMap, big: true) { done() }
-                } content: {
+                }) {
                     switch model.phase {
                     case .sending, .loadingRemote:
                         StateBlock(title: S.summary.sending)

@@ -70,10 +70,6 @@ class AppGraph(context: Context) {
         scheduleUpload = { RunUploadWorker.schedule(this.context) },
         deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".take(80),
     )
-
-    init {
-        wear.listen { runController.onWatchCommand(it) }
-    }
 }
 
 fun CoroutineScope.launchSafe(block: suspend () -> Unit) {

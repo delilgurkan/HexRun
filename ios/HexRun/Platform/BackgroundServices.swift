@@ -8,8 +8,8 @@ enum BackgroundQueue {
     static let identifier = "co.hexrun.app.runqueue"
 
     /// `application(_:didFinishLaunchingWithOptions:)` içinde çağrılmalı.
-    static func register(queue: @escaping () -> RunQueue?) {
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: identifier, using: nil) { task in
+    static func register(queue: @escaping @Sendable () -> RunQueue?) {
+        _ = BGTaskScheduler.shared.register(forTaskWithIdentifier: identifier, using: nil) { task in
             let work = Task {
                 if let q = queue() {
                     await q.flush(force: true)

@@ -311,12 +311,12 @@ struct NotificationsScreen: View {
 
     var body: some View {
         let m = model
-        HXScreen(title: S.notifications.title) {
+        HXScreen(title: S.notifications.title, right: {
             Button(S.notifications.markRead) { Task { await m.markRead() } }
                 .font(HXFont.font(.archivo, .semibold, 15)).foregroundStyle(t.c.ink)
                 .frame(minHeight: Target.min).padding(.horizontal, 8)
                 .accessibilityIdentifier("mark-read")
-        } content: {
+        }) {
             HStack(spacing: 8) {
                 ForEach(NotificationFilter.allCases, id: \.self) { f in
                     Chip(label: S.notifications.filters[f] ?? f.rawValue, selected: m.filter == f) { Task { await m.select(f) } }

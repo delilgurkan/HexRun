@@ -140,9 +140,7 @@ struct PrivacyScreen: View {
 /// ASWebAuthenticationSession sunum bağlamı (Strava OAuth).
 final class WebAuthContext: NSObject, ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        MainActor.assumeIsolated {
-            UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first?.keyWindow ?? ASPresentationAnchor()
-        }
+        UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first?.keyWindow ?? ASPresentationAnchor()
     }
 }
 
@@ -253,7 +251,7 @@ struct ShareScreen: View {
     init(app: AppModel, runId: String) { _model = State(initialValue: ShareModel(app: app, runId: runId)) }
 
     var body: some View {
-        HXScreen(title: S.share.title, onBack: { dismiss() }) {
+        HXScreen(title: S.share.title, onBack: { dismiss() }, footer: {
             if let card = model.card.value, let image = render(card) {
                 ShareLink(item: image, preview: SharePreview(S.share.title, image: image)) {
                     HStack(spacing: 8) {
@@ -265,7 +263,7 @@ struct ShareScreen: View {
                 }
                 .accessibilityIdentifier("share-btn")
             }
-        } content: {
+        }) {
             Segmented(options: [(true, S.share.dark), (false, S.share.light)], value: $dark)
             if let card = model.card.value {
                 StoryCard(card: card, dark: dark, width: 270).frame(maxWidth: .infinity)

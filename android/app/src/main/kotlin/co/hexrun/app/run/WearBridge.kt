@@ -1,20 +1,19 @@
 package co.hexrun.app.run
 
 import android.content.Context
-import co.hexrun.core.WatchCommand
 import co.hexrun.core.WatchEvent
 import co.hexrun.core.WatchHud
 import co.hexrun.core.WatchPayload
-import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.WearableListenerService
 
 /**
  * Telefon tarafı saat köprüsü (docs/NATIVE.md "Telefon ↔ saat protokolü"):
  * - durum: DataClient `/hexrun/hud`, anahtar `json` (en son durum kazanır),
  * - olay: MessageClient `/hexrun/event` (tick, conquest, loop_open) → bağlı tüm saatlere,
- * - komut: MessageClient `/hexrun/command` (pause/resume/finish) ← saatten.
+ * - komut: MessageClient `/hexrun/command` (pause/resume/finish) ← saatten ([WatchCommandService]).
  * Google Play hizmetleri ya da saat yoksa çağrılar sessizce başarısız olur.
  */
 class WearBridge(context: Context) : WatchSink {
@@ -22,13 +21,8 @@ class WearBridge(context: Context) : WatchSink {
     private val data by lazy { runCatching { Wearable.getDataClient(app) }.getOrNull() }
     private val messages by lazy { runCatching { Wearable.getMessageClient(app) }.getOrNull() }
     private val nodes by lazy { runCatching { Wearable.getNodeClient(app) }.getOrNull() }
-    private var listener: MessageClient.OnMessageReceivedListener? = null
-    @Volatile private var lastState: String? = null
 
     override fun publish(hud: WatchHud) {
-        // Boşta durumu yalnız bir kez yazılır (gereksiz senkronizasyon yok).
-        if (hud.state == "idle" && lastState == "idle") return
-        lastState = hud.state
         val client = data ?: return
         runCatching {
             val req = PutDataMapRequest.create(WatchPayload.PATH_HUD).apply {
@@ -49,16 +43,17 @@ class WearBridge(context: Context) : WatchSink {
             }
         }
     }
+}
 
-    /** Saat komutlarını dinlemeye başlar (uygulama süreci yaşadıkça). */
-    fun listen(onCommand: (WatchCommand) -> Unit) {
-        val m = messages ?: return
-        if (listener != null) return
-        val l = MessageClient.OnMessageReceivedListener { ev: MessageEvent ->
-            if (ev.path == WatchPayload.PATH_COMMAND) WatchPayload.decodeCommand(ev.data)?.let(onCommand)
-        }
-        listener = l
-        runCatching { m.addListener(l) }
+/**
+ * Saat → telefon komutları (`/hexrun/command`). Süreç kapalıysa da sistem bu servisi başlatır;
+ * komut işlendikten hemen sonra güncel HUD yayımlanır (saat iyimser arayüzünü 5 sn içinde doğrular).
+ */
+class WatchCommandService : WearableListenerService() {
+    override fun onMessageReceived(event: MessageEvent) {
+        if (event.path != WatchPayload.PATH_COMMAND) return
+        val cmd = WatchPayload.decodeCommand(event.data) ?: return
+        (application as co.hexrun.app.HexRunApp).graph.runController.onWatchCommand(cmd)
     }
 }
 

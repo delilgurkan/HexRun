@@ -222,6 +222,13 @@ struct SectionTitle<Right: View>: View {
     }
 }
 
+extension SectionTitle {
+    init(_ title: String, @ViewBuilder right: @escaping () -> Right) {
+        self.title = title
+        self.right = right
+    }
+}
+
 extension SectionTitle where Right == EmptyView {
     init(_ title: String) {
         self.title = title

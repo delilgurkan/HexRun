@@ -18,9 +18,9 @@ struct ProfileScreen: View {
     }
 
     var body: some View {
-        HXScreen(title: S.profile.title) {
+        HXScreen(title: S.profile.title, right: {
             IconButton(.gear, label: S.profile.settings) { router.push(.settings) }
-        } content: {
+        }) {
             if let me = app.me {
                 HStack(spacing: 12) {
                     PlayerBadge(slot: me.slot, initials: me.initials, size: 56, goldFrame: me.goldFrame, ring: true)
@@ -290,7 +290,7 @@ struct BadgeDetailScreen: View {
         let plan = InsigniaPlan(data: data, badgeId: id, chosen: chosen, running: run.isActive)
         let b = plan.badge
         let byId = Dictionary(data.badges.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
-        return HXScreen(title: b.name) {
+        return HXScreen(title: b.name, footer: {
             if b.earned && plan.slottable {
                 if plan.equippedAt != nil {
                     HXButton(S.badges.unequip, kind: .secondary, big: true, loading: model.saving, disabled: plan.locked) {
@@ -304,7 +304,7 @@ struct BadgeDetailScreen: View {
                     .accessibilityIdentifier("equip")
                 }
             }
-        } content: {
+        }) {
             Text(plan.kicker).hx(.label, tone: 2)
             Text(b.name).hx(.title1).accessibilityAddTraits(.isHeader)
             if let ins = b.insignia { Text(ins.effect).hx(.title2) } else { Text(S.badges.notInsignia).hx(.body, tone: 2) }
@@ -379,8 +379,8 @@ struct FriendsTab: View {
         .accessibilityIdentifier("friends")
     }
 
-    @ViewBuilder private func list(_ m: FriendsModel) -> some View {
-        @Bindable var m = m
+    @ViewBuilder private func list(_ fm: FriendsModel) -> some View {
+        @Bindable var m = fm
         if let f = m.friends.value {
             Text(S.friends.count(f.friends.count)).hx(.label, tone: 2)
             if f.friends.isEmpty {

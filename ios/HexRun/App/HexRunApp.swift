@@ -5,7 +5,8 @@ import HexRunKit
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        BackgroundQueue.register { MainActor.assumeIsolated { AppEnvironment.shared.app.queue } }
+        let queue = MainActor.assumeIsolated { AppEnvironment.shared.app.queue }
+        BackgroundQueue.register { queue }
         if let id = AppConfig.googleClientId { GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: id) }
         return true
     }
