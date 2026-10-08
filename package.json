@@ -1,0 +1,19 @@
+{
+  "name": "hexrun",
+  "private": true,
+  "version": "1.0.0",
+  "description": "HexRun — koş, halkayı kapat, mahalleyi al.",
+  "workspaces": [
+    "packages/*",
+    "apps/server"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm run build -w @hexrun/core && npm run build -w @hexrun/server",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm test --workspaces --if-present"
+  }
+}

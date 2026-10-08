@@ -1,0 +1,53 @@
+<!--meta {
+  "title": "Destek ve iletişim",
+  "description": "HexRun desteği: halka incelemesi, GPS ve saat bağlantısı sorunları, hesap ve gizlilik talepleri için iletişim.",
+  "route": "/destek/",
+  "alt": "/en/support/"
+} -->
+<div class="wrap">
+  <header class="page-head">
+    <p class="label">Destek</p>
+    <h1>Yardım lazım mı?</h1>
+    <p class="lead">Bize {{email.support}} adresinden yaz. Kullanıcı adını, telefon modelini ve uygulama sürümünü (Profil › Ayarlar'ın en altında) eklersen daha hızlı yardım ederiz.</p>
+  </header>
+  <div class="prose">
+    <h2 id="iletisim">Kime yazmalı</h2>
+    <table>
+      <thead><tr><th scope="col">Konu</th><th scope="col">Adres</th></tr></thead>
+      <tbody>
+        <tr><td>Oyun, hesap, hata bildirimi, itirazlar</td><td>{{email.support}}</td></tr>
+        <tr><td>Kişisel veriler, KVKK / GDPR başvuruları, hesap silme</td><td>{{email.kvkk}}</td></tr>
+        <tr><td>Basın ve iş birliği</td><td>{{email.press}}</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="inceleme">Halkam "inceleniyor" görünüyor</h2>
+    <p>Bir bölümde tempo koşu temposunun çok üstündeyse ya da GPS sıçradıysa halka incelemeye alınır. Koşun ve serin kaydedilmiştir; harita sonuç gelene kadar değişmez. Sonucu bildirimle haber veririz. Koşu özetindeki <strong>Bilgi ekle</strong> ile bağlam ekleyebilirsin (ör. "tünelden geçtim, GPS koptu"). Karara itiraz için {{email.support}} adresine koşunun tarihini ve saatini yaz.</p>
+
+    <h2 id="gps">GPS izi kopuk ya da halka kapanmadı</h2>
+    <ul>
+      <li>Konum iznini <strong>uygulamayı kullanırken</strong> olarak ver ve <strong>hassas konumu</strong> açık bırak.</li>
+      <li>Android'de pil tasarrufu modu koşu kaydını durdurabilir; HexRun için pil optimizasyonunu kapat.</li>
+      <li>Koşuya açık havada, GPS sinyali oturduktan sonra başla.</li>
+      <li>Halka, başladığın noktanın 50 m yakınına döndüğünde kapanır. Uygulama "85 m kaldı" gibi bir uyarıyla yönlendirir.</li>
+    </ul>
+
+    <h2 id="saat">Saatimden gelen koşu haritaya işlenmedi</h2>
+    <ul>
+      <li>Yalnız son 24 saat içinde biten koşular haritaya işlenir; daha eskiler yalnız istatistiğe eklenir.</li>
+      <li>Aynı koşu iki kaynaktan (ör. Garmin ve Strava) gelirse bir kez sayılır.</li>
+      <li>Saat uygulamasının telefonla eşitlendiğinden ve bağlantının <span class="path">Profil › Ayarlar</span> altında hâlâ açık olduğundan emin ol.</li>
+    </ul>
+
+    <h2 id="hesap">Hesap ve gizlilik</h2>
+    <ul>
+      <li>Hesap silme: <a href="/hesap-silme/">hesap silme talimatları</a></li>
+      <li>Verilerin ve hakların: <a href="/gizlilik/">Gizlilik politikası</a></li>
+      <li>Taciz veya takip: oyuncunun profilinden <strong>Şikâyet et</strong>; acil durumda 112. Bkz. <a href="/topluluk-kurallari/">Topluluk kuralları</a></li>
+    </ul>
+
+    <h2 id="sirket">Şirket bilgileri</h2>
+    <p>{{company.name}}<br>{{company.address}}<br>MERSİS: {{company.mersis}}</p>
+    <p class="muted small"><a href="/en/support/" hreflang="en" lang="en">Read in English</a></p>
+  </div>
+</div>

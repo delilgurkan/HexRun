@@ -1,0 +1,155 @@
+<!--meta {
+  "title": "Gizlilik politikası",
+  "description": "HexRun gizlilik politikası ve KVKK aydınlatma metni: hangi verileri neden işlediğimiz, konum verisinin nasıl korunduğu, saklama süreleri ve hakların.",
+  "route": "/gizlilik/",
+  "alt": "/en/privacy/"
+} -->
+<div class="wrap">
+  <header class="page-head">
+    <p class="label">Yasal · KVKK aydınlatma metni ve GDPR bildirimi</p>
+    <h1>Gizlilik politikası</h1>
+    <p class="lead">Yürürlük tarihi: {{legal.effectiveDate}}</p>
+  </header>
+  <div class="prose">
+    <p class="notice"><strong>Kısaca:</strong> Koşu rotaların ve halkaların yalnız sana görünür. Diğer oyuncular yalnız peteklerin rengini ve gücünü görür. Ham GPS noktalarını 30 gün saklar, sonra yalnız petek listesine indiririz. Verini uygulamadan indirebilir, hesabını uygulamadan silebilirsin. Verini satmayız, reklam için kullanmayız.</p>
+
+    <nav class="toc" aria-label="Bu sayfada">
+      <ol>
+        <li><a href="#sorumlu">Veri sorumlusu</a></li>
+        <li><a href="#veriler">İşlediğimiz veriler</a></li>
+        <li><a href="#amaclar">Amaçlar ve hukuki sebepler</a></li>
+        <li><a href="#konum">Konum, görünürlük ve gizlilik bölgesi</a></li>
+        <li><a href="#saklama">Saklama süreleri</a></li>
+        <li><a href="#aktarim">Aktarım ve hizmet sağlayıcılar</a></li>
+        <li><a href="#yurtdisi">Yurt dışına aktarım</a></li>
+        <li><a href="#haklar">Hakların ve nasıl kullanılır</a></li>
+        <li><a href="#cocuklar">Çocuklar</a></li>
+        <li><a href="#inceleme">Hile kontrolü ve otomatik değerlendirme</a></li>
+        <li><a href="#cerezler">Web sitesi ve çerezler</a></li>
+        <li><a href="#bekleme-listesi">Bekleme listesi</a></li>
+        <li><a href="#guvenlik">Güvenlik</a></li>
+        <li><a href="#degisiklik">Değişiklikler ve iletişim</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="sorumlu">1. Veri sorumlusu</h2>
+    <p>HexRun mobil uygulaması ve hexrun.co web sitesi ("HexRun", "biz") kapsamında kişisel verilerin, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") ve Avrupa Birliği Genel Veri Koruma Tüzüğü ("GDPR") bakımından veri sorumlusu:</p>
+    <ul>
+      <li>Unvan: {{company.name}}</li>
+      <li>Adres: {{company.address}}</li>
+      <li>MERSİS no: {{company.mersis}}</li>
+      <li>Ticaret sicili: {{company.registry}}</li>
+      <li>VERBİS: {{company.verbis}}</li>
+      <li>Kişisel veri başvuruları: {{email.kvkk}}</li>
+      <li>AB temsilcisi: {{company.euRep}}</li>
+    </ul>
+
+    <h2 id="veriler">2. İşlediğimiz kişisel veriler</h2>
+    <table>
+      <thead><tr><th scope="col">Kategori</th><th scope="col">Örnekler</th><th scope="col">Kaynak</th></tr></thead>
+      <tbody>
+        <tr><td>Hesap ve kimlik</td><td>Kullanıcı adı, görünen ad, e-posta, profil rengi, dil, ülke, yaş beyanı, Apple veya Google ile giriş kimliği</td><td>Sen; Apple / Google girişi</td></tr>
+        <tr><td>Konum ve koşu (GPS izleri)</td><td>Koşu sırasındaki konum noktaları, zaman damgaları, mesafe, süre, tempo, kapanan halkalar</td><td>Telefonun; bağladığın saat veya uygulama</td></tr>
+        <tr><td>Türetilmiş oyun verisi</td><td>Petek (hücre) listeleri, güç, düellolar, lig ve takım sıralaması, rozetler, seri</td><td>Koşularından hesaplanır</td></tr>
+        <tr><td>Gizlilik ayarları</td><td>Gizlilik bölgesinin yaklaşık merkezi ve yarıçapı (200–800 m), görünürlük tercihleri</td><td>Sen</td></tr>
+        <tr><td>Cihaz ve bildirim</td><td>Anlık bildirim (push) jetonu, cihaz modeli, işletim sistemi ve uygulama sürümü, bildirim tercihleri</td><td>Cihazın</td></tr>
+        <tr><td>İsteğe bağlı saat / sağlık içe aktarımı</td><td>Bağladığın Garmin, Coros, Suunto, Polar, Apple Sağlık (HealthKit), Health Connect / Wear OS veya Strava hesabından gelen koşu kayıtları; sağlayıcı paylaşırsa nabız gibi sağlık verileri</td><td>Bağladığın üçüncü taraf hesap, yalnız senin iznin ile</td></tr>
+        <tr><td>Sosyal etkileşim</td><td>Arkadaşlıklar, takım üyeliği, alkışlar, davet kodları, şikâyet ve engelleme kayıtları</td><td>Sen ve diğer oyuncular</td></tr>
+        <tr><td>Destek ve iletişim</td><td>Destek yazışmaları, inceleme için eklediğin açıklamalar</td><td>Sen</td></tr>
+        <tr><td>Teknik kayıtlar</td><td>IP adresi, istek zamanı, hata kayıtları, güvenlik olayları</td><td>Sunucularımız</td></tr>
+      </tbody>
+    </table>
+    <p>Pazarlama amaçlı reklam kimliği (IDFA / AAID) toplamıyoruz ve uygulamalar arası izleme yapmıyoruz.</p>
+
+    <h2 id="amaclar">3. Amaçlar ve hukuki sebepler</h2>
+    <table>
+      <thead><tr><th scope="col">Amaç</th><th scope="col">Veri</th><th scope="col">KVKK md. 5–6</th><th scope="col">GDPR md. 6 / 9</th></tr></thead>
+      <tbody>
+        <tr><td>Hesabı açmak ve oyunu sunmak: halkaları kapatmak, petekleri ve düelloları hesaplamak, sıralama</td><td>Hesap, konum ve koşu, türetilmiş oyun verisi</td><td>Sözleşmenin kurulması ve ifası (5/2-c)</td><td>Sözleşmenin ifası (6/1-b)</td></tr>
+        <tr><td>Hile kontrolü ve adil oyun; halka incelemesi</td><td>Konum ve koşu, teknik kayıtlar</td><td>Meşru menfaat (5/2-f)</td><td>Meşru menfaat (6/1-f)</td></tr>
+        <tr><td>Oyunla ilgili bildirimler (düello, erime, sonuç)</td><td>Push jetonu, tercihler</td><td>Sözleşmenin ifası (5/2-c)</td><td>Sözleşmenin ifası (6/1-b)</td></tr>
+        <tr><td>Saat ve uygulama içe aktarımı</td><td>İçe aktarılan koşu kayıtları</td><td>Sözleşmenin ifası (5/2-c)</td><td>Sözleşmenin ifası (6/1-b)</td></tr>
+        <tr><td>Sağlık verisi (ör. nabız) içe aktarılırsa istatistik göstermek</td><td>Sağlık verisi</td><td>Açık rıza (6/2)</td><td>Açık rıza (9/2-a)</td></tr>
+        <tr><td>Destek taleplerini yanıtlamak</td><td>Destek yazışmaları</td><td>Sözleşmenin ifası; meşru menfaat</td><td>6/1-b; 6/1-f</td></tr>
+        <tr><td>Güvenlik, kötüye kullanımın önlenmesi, hizmetin sürekliliği</td><td>Teknik kayıtlar</td><td>Meşru menfaat (5/2-f); hukuki yükümlülük (5/2-ç)</td><td>6/1-f; 6/1-c</td></tr>
+        <tr><td>Bekleme listesi ve açılış duyuruları</td><td>E-posta, dil</td><td>Açık rıza (5/1); 6563 sayılı Kanun kapsamında ticari elektronik ileti onayı</td><td>Rıza (6/1-a)</td></tr>
+        <tr><td>Yasal taleplere yanıt, hakların korunması</td><td>İlgili veriler</td><td>Hukuki yükümlülük (5/2-ç); bir hakkın tesisi, kullanılması veya korunması (5/2-e)</td><td>6/1-c; 6/1-f</td></tr>
+      </tbody>
+    </table>
+    <p>Açık rızaya dayanan işlemelerde rızanı istediğin an geri çekebilirsin; bu, geri çekmeden önceki işlemenin hukuka uygunluğunu etkilemez.</p>
+
+    <h2 id="konum">4. Konum, görünürlük ve gizlilik bölgesi</h2>
+    <ul>
+      <li>Konum yalnız sen bir koşu başlattığında ya da bir saat / uygulama koşusunu içe aktardığında işlenir. Koşu dışında arka planda konum toplamayız.</li>
+      <li><strong>Halkaların ve rotaların yalnız sana görünür.</strong> Diğer oyuncular yalnız peteklerin rengini, gücünü ve sahibin kullanıcı adını görür. Düello kayıtları yalnız alanın sahibine ve o saldırgana gösterilir.</li>
+      <li><strong>Gizlilik bölgesi:</strong> Evinin çevresinde 200–800 m yarıçaplı bir bölge belirleyebilirsin. Bu bölgedeki peteklerin sahibi diğer oyunculara "Gizli oyuncu" olarak görünür; adın ve baş harfin gösterilmez. Dairenin merkezi her hesapta rastgele kaydırılır ve başkalarına çizilmez.</li>
+      <li>Paylaşım kartlarında harita, rota, sokak ve rakip adı bulunmaz; gizlilik bölgesindeki petekler silüete girmez.</li>
+      <li>Arkadaş akışı yalnız arkadaşlarına görünür ve saatler yuvarlanır.</li>
+    </ul>
+
+    <h2 id="saklama">5. Saklama süreleri</h2>
+    <table>
+      <thead><tr><th scope="col">Veri</th><th scope="col">Süre</th></tr></thead>
+      <tbody>
+        <tr><td>Ham GPS noktaları (konum + zaman)</td><td><strong>30 gün.</strong> Sonra koşu yalnız petek listesine ve özet istatistiklere (mesafe, süre, tempo) indirgenir; ham noktalar silinir.</td></tr>
+        <tr><td>Petek listeleri, koşu özetleri, oyun verisi</td><td>Hesabın açık kaldığı sürece</td></tr>
+        <tr><td>Hesap verisi</td><td>Hesap silinene kadar; silme talebinden sonra en geç 30 gün içinde silinir veya anonim hâle getirilir. Yedeklerden en geç <mark class="ph">[YEDEK SAKLAMA SÜRESİ]</mark> içinde silinir.</td></tr>
+        <tr><td>Push jetonları</td><td>Çıkış yapana, uygulamayı silene ya da jeton geçersiz olana kadar</td></tr>
+        <tr><td>İçe aktarma bağlantıları</td><td>Bağlantıyı kaldırana kadar; kaldırınca erişim jetonları silinir</td></tr>
+        <tr><td>Bekleme listesi e-postası</td><td>Listeden çıkana ya da açılış duyurusundan sonra <mark class="ph">[BEKLEME LİSTESİ SAKLAMA SÜRESİ]</mark> dolana kadar</td></tr>
+        <tr><td>Teknik kayıtlar ve güvenlik olayları</td><td><mark class="ph">[LOG SAKLAMA SÜRESİ]</mark>; mevzuatın öngördüğü süreler saklıdır</td></tr>
+      </tbody>
+    </table>
+    <p>Süresi dolan veriler KVKK'ya uygun olarak silinir, yok edilir veya anonim hâle getirilir.</p>
+
+    <h2 id="aktarim">6. Aktarım ve hizmet sağlayıcılar</h2>
+    <p>Verini satmayız. Yalnız hizmeti sunmak için gereken ölçüde, sözleşmeyle bağlı hizmet sağlayıcılarla paylaşırız:</p>
+    <table>
+      <thead><tr><th scope="col">Alıcı</th><th scope="col">Ne için</th><th scope="col">Hangi veri</th></tr></thead>
+      <tbody>
+        <tr><td>Barındırma / bulut: <mark class="ph">[BULUT SAĞLAYICI VE BÖLGE]</mark></td><td>Sunucular ve veritabanı</td><td>Tüm hizmet verisi</td></tr>
+        <tr><td>Harita karoları: <mark class="ph">[HARİTA KARO SAĞLAYICI]</mark></td><td>Haritanın çizilmesi</td><td>IP adresi, görüntülenen harita alanı (rotan gönderilmez)</td></tr>
+        <tr><td>Expo (push servisi), Apple APNs, Google FCM</td><td>Anlık bildirim iletimi</td><td>Push jetonu, bildirim içeriği</td></tr>
+        <tr><td>Apple ve Google ile giriş</td><td>Kimlik doğrulama</td><td>Giriş kimliği, (paylaşırsan) e-posta</td></tr>
+        <tr><td>Strava, Garmin, Coros, Suunto, Polar, Apple Sağlık, Health Connect</td><td>Yalnız bağladığında koşu içe aktarma (ve açtıysan Strava'ya gönderme)</td><td>Erişim jetonu, koşu kayıtları</td></tr>
+        <tr><td>E-posta gönderimi: <mark class="ph">[E-POSTA SAĞLAYICI]</mark></td><td>Bekleme listesi ve hesap e-postaları</td><td>E-posta, dil</td></tr>
+        <tr><td>Hata izleme: <mark class="ph">[HATA İZLEME SAĞLAYICI, varsa]</mark></td><td>Çökme ve hata tespiti</td><td>Teknik kayıtlar, cihaz bilgisi</td></tr>
+        <tr><td>Yetkili kamu kurum ve kuruluşları</td><td>Hukuki yükümlülükler</td><td>Talep edilen veriler</td></tr>
+      </tbody>
+    </table>
+    <p>Sağlık uygulamalarından (Apple Sağlık, Health Connect) gelen veriler reklam veya pazarlama için kullanılmaz ve üçüncü taraflara aktarılmaz.</p>
+
+    <h2 id="yurtdisi">7. Yurt dışına aktarım</h2>
+    <p>Yukarıdaki hizmet sağlayıcıların bir kısmı verileri Türkiye ve Avrupa Ekonomik Alanı dışında işleyebilir. Türkiye'den yurt dışına aktarımlar KVKK md. 9 uyarınca yeterlilik kararı, Kişisel Verileri Koruma Kurulu'nun ilan ettiği standart sözleşmeler (imzadan sonra 5 iş günü içinde Kurum'a bildirilir) veya kanunda sayılan diğer güvencelerle; AEA'dan yapılan aktarımlar GDPR md. 45–46 uyarınca yeterlilik kararı veya Avrupa Komisyonu standart sözleşme maddeleri ile yapılır. Güvencelerin bir kopyasını {{email.kvkk}} adresinden isteyebilirsin.</p>
+
+    <h2 id="haklar">8. Hakların ve nasıl kullanılır</h2>
+    <p>KVKK md. 11 uyarınca; kişisel verinin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, işlenme amacını ve amaca uygun kullanılıp kullanılmadığını öğrenme, aktarıldığı üçüncü kişileri bilme, eksik veya yanlış işlenmişse düzeltilmesini, KVKK md. 7 çerçevesinde silinmesini veya yok edilmesini ve bunların aktarılan üçüncü kişilere bildirilmesini isteme, münhasıran otomatik sistemlerle analiz sonucu aleyhine bir sonuç çıkmasına itiraz etme ve kanuna aykırı işleme nedeniyle zarara uğrarsan zararın giderilmesini talep etme hakların vardır.</p>
+    <p>GDPR kapsamındaysan ayrıca erişim, düzeltme, silme, işlemeyi kısıtlama, veri taşınabilirliği, meşru menfaate dayalı işlemeye itiraz ve rızayı geri çekme hakların ile bulunduğun ülkedeki denetim makamına şikâyet hakkın vardır.</p>
+    <h3>Nasıl kullanırsın</h3>
+    <ul>
+      <li><strong>Uygulamada:</strong> <span class="path">Profil › Ayarlar › Verilerimi indir</span> ile koşularını, peteklerini ve hesap verini makinece okunabilir bir dosya olarak indirebilirsin. <span class="path">Profil › Ayarlar › Hesabı sil</span> ile hesabını silebilirsin (<a href="/hesap-silme/">ayrıntılar</a>).</li>
+      <li><strong>E-posta ile:</strong> {{email.kvkk}} adresine, hesabına kayıtlı e-posta adresinden yaz. Kimliğini doğrulamak için ek bilgi isteyebiliriz.</li>
+      <li><strong>Yazılı olarak:</strong> {{company.address}} adresine, Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ'e uygun olarak.</li>
+    </ul>
+    <p>Başvurularını en geç 30 gün içinde ücretsiz yanıtlarız. Başvurunun reddedilmesi, cevabı yetersiz bulman veya süresinde cevap verilmemesi hâlinde Kişisel Verileri Koruma Kurulu'na şikâyette bulunabilirsin.</p>
+
+    <h2 id="cocuklar">9. Çocuklar</h2>
+    <p>HexRun 13 yaşından küçükler için değildir. Bulunduğun ülkede dijital hizmetlere kendi rızasıyla katılım yaşı daha yüksekse (AB üye devletlerinde 13 ile 16 arası), o yaşın altındaysan uygulamayı yalnız ebeveyninin veya vasinin onayıyla kullanabilirsin. 13 yaşından küçük bir çocuğun hesap açtığını öğrenirsek hesabı ve verilerini sileriz. Bu konuda bize {{email.kvkk}} adresinden ulaşabilirsin.</p>
+
+    <h2 id="inceleme">10. Hile kontrolü ve otomatik değerlendirme</h2>
+    <p>Her halka otomatik olarak tempo ve GPS tutarlılığı açısından kontrol edilir (ör. koşu temposunun çok üstündeki bölümler, GPS sıçramaları, uzun GPS boşlukları). Şüpheli bulunan halka cezalandırılmaz; "inceleniyor" durumuna alınır, koşun ve serin kaydedilir, harita sonuç gelene kadar değişmez. Halkayı reddetme kararını bir insan verir. Karara itiraz etmek veya açıklama eklemek için uygulamadaki "Bilgi ekle" seçeneğini ya da <a href="/destek/">destek</a> kanallarını kullanabilirsin.</p>
+
+    <h2 id="cerezler">11. Web sitesi ve çerezler</h2>
+    <p>hexrun.co çerez kullanmaz, analiz veya reklam takibi yapmaz ve üçüncü taraf betik ya da yazı tipi yüklemez. Sunucumuz güvenlik ve hizmetin işletilmesi için standart erişim kayıtları (IP adresi, zaman, istenen sayfa) tutabilir. Yalnız bekleme listesi formunu gönderirsen e-posta adresin API'mize iletilir.</p>
+
+    <h2 id="bekleme-listesi">12. Bekleme listesi</h2>
+    <p>Bekleme listesine yazdığın e-posta adresini ve dil tercihini yalnız HexRun'ın açılışını ve erken erişim davetlerini sana bildirmek için, açık rızana dayanarak işleriz. Her e-postadaki bağlantıyla ya da {{email.kvkk}} adresine yazarak listeden çıkabilirsin.</p>
+
+    <h2 id="guvenlik">13. Güvenlik</h2>
+    <p>Veriler aktarım sırasında TLS ile şifrelenir; erişim, görev gereği ihtiyacı olan personelle sınırlıdır ve kayıt altına alınır. Ham konum verisinin 30 gün sonra petek listesine indirgenmesi, olası bir ihlalde etkiyi de sınırlar. Bir veri ihlali olursa KVKK ve GDPR'ın öngördüğü sürelerde Kurum'a ve sana bildirimde bulunuruz.</p>
+
+    <h2 id="degisiklik">14. Değişiklikler ve iletişim</h2>
+    <p>Bu politikayı güncelleyebiliriz. Önemli değişiklikleri yürürlüğe girmeden önce uygulama içinde duyururuz. Sorular için: {{email.kvkk}}.</p>
+    <p class="muted small">Bu metnin İngilizce sürümü bilgi amaçlıdır; çelişki hâlinde Türkçe metin esas alınır. <a href="/en/privacy/" hreflang="en" lang="en">Read in English</a>.</p>
+  </div>
+</div>

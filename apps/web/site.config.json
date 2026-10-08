@@ -1,0 +1,36 @@
+{
+  "$comment": "Single source of truth for deploy-time values. Anything still in [BRACKETS] is a placeholder: the build renders it as a visible, marked placeholder (or a safe fallback for links) and prints a warning. See README.md.",
+  "siteUrl": "https://hexrun.co",
+  "apiBase": "https://api.hexrun.co",
+  "adminApiBase": "https://api.hexrun.co",
+  "appStoreUrl": "[APP_STORE_URL]",
+  "playUrl": "[PLAY_URL]",
+  "appScheme": "hexrun",
+  "ios": {
+    "teamId": "[APPLE_TEAM_ID]",
+    "bundleId": "co.hexrun.app"
+  },
+  "android": {
+    "packageName": "co.hexrun.app",
+    "sha256Fingerprints": [
+      "[ANDROID_SHA256_CERT_FINGERPRINT]"
+    ]
+  },
+  "company": {
+    "name": "[ŞİRKET UNVANI]",
+    "address": "[ŞİRKET ADRESİ]",
+    "mersis": "[MERSİS NO]",
+    "registry": "[TİCARET SİCİL MÜDÜRLÜĞÜ VE NO]",
+    "verbis": "[VERBİS KAYIT DURUMU]",
+    "euRepresentative": "[AB TEMSİLCİSİ — GDPR Md. 27, gerekiyorsa]"
+  },
+  "emails": {
+    "kvkk": "[KVKK_EMAIL]",
+    "support": "[DESTEK_EMAIL]",
+    "press": "[BASIN_EMAIL]"
+  },
+  "legal": {
+    "effectiveDate": "[YÜRÜRLÜK TARİHİ]",
+    "governingCourts": "[YETKİLİ MAHKEME / İCRA DAİRELERİ]"
+  }
+}

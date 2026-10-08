@@ -1,0 +1,153 @@
+<!--meta {
+  "title": "Privacy policy",
+  "description": "HexRun privacy policy (GDPR and Turkish KVKK): what we process and why, how location data is protected, retention periods and your rights.",
+  "route": "/en/privacy/",
+  "alt": "/gizlilik/"
+} -->
+<div class="wrap">
+  <header class="page-head">
+    <p class="label">Legal · GDPR notice and KVKK information</p>
+    <h1>Privacy policy</h1>
+    <p class="lead">Effective date: {{legal.effectiveDate}}</p>
+  </header>
+  <div class="prose">
+    <p class="notice"><strong>In short:</strong> Your routes and loops are visible only to you. Other players only see the colour and power of cells. We keep raw GPS points for 30 days, then reduce them to a list of cells. You can export your data and delete your account from the app. We don't sell your data or use it for advertising.</p>
+
+    <nav class="toc" aria-label="On this page">
+      <ol>
+        <li><a href="#controller">Data controller</a></li>
+        <li><a href="#data">Data we process</a></li>
+        <li><a href="#purposes">Purposes and legal bases</a></li>
+        <li><a href="#location">Location, visibility and privacy zone</a></li>
+        <li><a href="#retention">Retention</a></li>
+        <li><a href="#recipients">Recipients and service providers</a></li>
+        <li><a href="#transfers">International transfers</a></li>
+        <li><a href="#rights">Your rights and how to use them</a></li>
+        <li><a href="#children">Children</a></li>
+        <li><a href="#review">Anti-cheat and automated checks</a></li>
+        <li><a href="#cookies">Website and cookies</a></li>
+        <li><a href="#waitlist">Waitlist</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#changes">Changes and contact</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="controller">1. Data controller</h2>
+    <p>The controller for personal data processed through the HexRun mobile app and the hexrun.co website ("HexRun", "we") under the Turkish Personal Data Protection Law No. 6698 ("KVKK") and the EU General Data Protection Regulation ("GDPR") is:</p>
+    <ul>
+      <li>Company: {{company.name}}</li>
+      <li>Address: {{company.address}}</li>
+      <li>MERSIS no.: {{company.mersis}}</li>
+      <li>Trade registry: {{company.registry}}</li>
+      <li>VERBIS: {{company.verbis}}</li>
+      <li>Data protection requests: {{email.kvkk}}</li>
+      <li>EU representative: {{company.euRep}}</li>
+    </ul>
+
+    <h2 id="data">2. Data we process</h2>
+    <table>
+      <thead><tr><th scope="col">Category</th><th scope="col">Examples</th><th scope="col">Source</th></tr></thead>
+      <tbody>
+        <tr><td>Account and identity</td><td>Username, display name, email, profile colour, language, country, age confirmation, Sign in with Apple or Google identifier</td><td>You; Apple / Google sign-in</td></tr>
+        <tr><td>Location and runs (GPS tracks)</td><td>Location points during a run, timestamps, distance, duration, pace, closed loops</td><td>Your phone; a watch or app you connect</td></tr>
+        <tr><td>Derived game data</td><td>Cell lists, power, duels, league and team rankings, badges, streak</td><td>Computed from your runs</td></tr>
+        <tr><td>Privacy settings</td><td>Approximate centre and radius (200–800 m) of your privacy zone, visibility preferences</td><td>You</td></tr>
+        <tr><td>Device and notifications</td><td>Push notification token, device model, OS and app version, notification preferences</td><td>Your device</td></tr>
+        <tr><td>Optional watch / health imports</td><td>Run records from a Garmin, Coros, Suunto, Polar, Apple Health (HealthKit), Health Connect / Wear OS or Strava account you connect; health data such as heart rate if the provider shares it</td><td>The third-party account you connect, only with your permission</td></tr>
+        <tr><td>Social interactions</td><td>Friendships, team membership, applause, invite codes, report and block records</td><td>You and other players</td></tr>
+        <tr><td>Support and contact</td><td>Support messages, notes you add to a loop under review</td><td>You</td></tr>
+        <tr><td>Technical logs</td><td>IP address, request time, error logs, security events</td><td>Our servers</td></tr>
+      </tbody>
+    </table>
+    <p>We do not collect advertising identifiers (IDFA / AAID) and we do not track you across other apps.</p>
+
+    <h2 id="purposes">3. Purposes and legal bases</h2>
+    <table>
+      <thead><tr><th scope="col">Purpose</th><th scope="col">Data</th><th scope="col">GDPR Art. 6 / 9</th><th scope="col">KVKK Art. 5–6</th></tr></thead>
+      <tbody>
+        <tr><td>Running your account and the game: closing loops, computing cells and duels, rankings</td><td>Account, location and runs, derived game data</td><td>Performance of a contract (6(1)(b))</td><td>5(2)(c)</td></tr>
+        <tr><td>Anti-cheat and fair play; loop review</td><td>Location and runs, technical logs</td><td>Legitimate interests (6(1)(f))</td><td>5(2)(f)</td></tr>
+        <tr><td>Game notifications (duels, decay, results)</td><td>Push token, preferences</td><td>Performance of a contract (6(1)(b))</td><td>5(2)(c)</td></tr>
+        <tr><td>Watch and app imports</td><td>Imported run records</td><td>Performance of a contract (6(1)(b))</td><td>5(2)(c)</td></tr>
+        <tr><td>Showing statistics from imported health data (e.g. heart rate)</td><td>Health data</td><td>Explicit consent (9(2)(a))</td><td>Explicit consent (6(2))</td></tr>
+        <tr><td>Answering support requests</td><td>Support messages</td><td>6(1)(b); 6(1)(f)</td><td>5(2)(c); 5(2)(f)</td></tr>
+        <tr><td>Security, abuse prevention, keeping the service running</td><td>Technical logs</td><td>6(1)(f); legal obligation 6(1)(c)</td><td>5(2)(f); 5(2)(ç)</td></tr>
+        <tr><td>Waitlist and launch announcements</td><td>Email, language</td><td>Consent (6(1)(a))</td><td>Explicit consent (5(1)); commercial e-message consent under Law No. 6563</td></tr>
+        <tr><td>Responding to legal requests, protecting rights</td><td>Relevant data</td><td>6(1)(c); 6(1)(f)</td><td>5(2)(ç); 5(2)(e)</td></tr>
+      </tbody>
+    </table>
+    <p>Where we rely on consent you can withdraw it at any time; this does not affect processing that happened before.</p>
+
+    <h2 id="location">4. Location, visibility and privacy zone</h2>
+    <ul>
+      <li>Location is processed only when you start a run or import a run from a watch or app. We do not collect location in the background outside runs.</li>
+      <li><strong>Your loops and routes are visible only to you.</strong> Other players only see the colour and power of cells and the owner's username. Duel records are shown only to the area's owner and that attacker.</li>
+      <li><strong>Privacy zone:</strong> You can set a zone with a 200–800 m radius around your home. The owner of cells in that zone is shown to others as "Hidden player", without your name or initials. The centre of the circle is randomly offset per account and the circle is never drawn for others.</li>
+      <li>Share cards contain no map, route, streets or rival names, and cells in your privacy zone are left out of the silhouette.</li>
+      <li>The friends feed is visible only to your friends and times are rounded.</li>
+    </ul>
+
+    <h2 id="retention">5. Retention</h2>
+    <table>
+      <thead><tr><th scope="col">Data</th><th scope="col">Period</th></tr></thead>
+      <tbody>
+        <tr><td>Raw GPS points (location + time)</td><td><strong>30 days.</strong> After that a run is reduced to its cell list and summary statistics (distance, duration, pace); raw points are deleted.</td></tr>
+        <tr><td>Cell lists, run summaries, game data</td><td>As long as your account exists</td></tr>
+        <tr><td>Account data</td><td>Until the account is deleted; deleted or anonymised within 30 days of your deletion request. Removed from backups within <mark class="ph">[BACKUP RETENTION PERIOD]</mark>.</td></tr>
+        <tr><td>Push tokens</td><td>Until you sign out, uninstall the app or the token becomes invalid</td></tr>
+        <tr><td>Import connections</td><td>Until you disconnect; access tokens are then deleted</td></tr>
+        <tr><td>Waitlist email</td><td>Until you leave the list or <mark class="ph">[WAITLIST RETENTION PERIOD]</mark> after the launch announcement</td></tr>
+        <tr><td>Technical logs and security events</td><td><mark class="ph">[LOG RETENTION PERIOD]</mark>, subject to statutory periods</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="recipients">6. Recipients and service providers</h2>
+    <p>We don't sell your data. We share it only as far as needed to run the service, with providers bound by contract:</p>
+    <table>
+      <thead><tr><th scope="col">Recipient</th><th scope="col">Purpose</th><th scope="col">Data</th></tr></thead>
+      <tbody>
+        <tr><td>Hosting / cloud: <mark class="ph">[CLOUD PROVIDER AND REGION]</mark></td><td>Servers and database</td><td>All service data</td></tr>
+        <tr><td>Map tiles: <mark class="ph">[MAP TILE PROVIDER]</mark></td><td>Drawing the map</td><td>IP address, map area being viewed (your route is not sent)</td></tr>
+        <tr><td>Expo (push service), Apple APNs, Google FCM</td><td>Delivering push notifications</td><td>Push token, notification content</td></tr>
+        <tr><td>Sign in with Apple and Google</td><td>Authentication</td><td>Sign-in identifier, email (if you share it)</td></tr>
+        <tr><td>Strava, Garmin, Coros, Suunto, Polar, Apple Health, Health Connect</td><td>Importing runs only if you connect them (and posting to Strava if you turn it on)</td><td>Access token, run records</td></tr>
+        <tr><td>Email delivery: <mark class="ph">[EMAIL PROVIDER]</mark></td><td>Waitlist and account emails</td><td>Email, language</td></tr>
+        <tr><td>Error monitoring: <mark class="ph">[ERROR MONITORING PROVIDER, if any]</mark></td><td>Crash and error detection</td><td>Technical logs, device information</td></tr>
+        <tr><td>Competent authorities</td><td>Legal obligations</td><td>Requested data</td></tr>
+      </tbody>
+    </table>
+    <p>Data from health platforms (Apple Health, Health Connect) is never used for advertising or marketing and is not shared with third parties.</p>
+
+    <h2 id="transfers">7. International transfers</h2>
+    <p>Some of the providers above may process data outside Türkiye and the European Economic Area. Transfers from Türkiye follow KVKK Art. 9 (an adequacy decision, the standard contracts published by the Turkish Data Protection Board, notified to the Authority within 5 business days of signing, or other statutory safeguards). Transfers from the EEA follow GDPR Art. 45–46 (an adequacy decision or the European Commission's Standard Contractual Clauses). You can request a copy of the safeguards at {{email.kvkk}}.</p>
+
+    <h2 id="rights">8. Your rights and how to use them</h2>
+    <p>Under the GDPR you have the right to access, rectification, erasure, restriction, data portability, to object to processing based on legitimate interests, to withdraw consent, and to complain to the supervisory authority where you live. Under KVKK Art. 11 you may also learn whether your data is processed, request information, learn the purpose and the third parties it is shared with, request correction or deletion and notification of these to recipients, object to an adverse outcome produced solely by automated analysis, and claim compensation for unlawful processing.</p>
+    <h3>How to use them</h3>
+    <ul>
+      <li><strong>In the app:</strong> <span class="path">Profile › Settings › Download my data</span> gives you your runs, cells and account data as a machine-readable file. <span class="path">Profile › Settings › Delete account</span> deletes your account (<a href="/en/account-deletion/">details</a>).</li>
+      <li><strong>By email:</strong> write to {{email.kvkk}} from the email address on your account. We may ask for extra information to verify your identity.</li>
+      <li><strong>In writing:</strong> to {{company.address}}.</li>
+    </ul>
+    <p>We answer free of charge within 30 days at the latest. If we reject your request, you find the answer insufficient, or we don't answer in time, you can complain to the Turkish Personal Data Protection Board or your local supervisory authority.</p>
+
+    <h2 id="children">9. Children</h2>
+    <p>HexRun is not for children under 13. If the age of digital consent in your country is higher (between 13 and 16 in EU member states), you may use the app below that age only with the consent of a parent or guardian. If we learn that a child under 13 has created an account, we delete the account and its data. You can reach us about this at {{email.kvkk}}.</p>
+
+    <h2 id="review">10. Anti-cheat and automated checks</h2>
+    <p>Every loop is automatically checked for pace and GPS consistency (for example stretches far beyond running pace, GPS jumps or long GPS gaps). A flagged loop is not punished: it is marked "under review", your run and streak are saved, and the map doesn't change until a result comes in. A person makes any decision to reject a loop. To contest it or add context, use "Add info" in the app or our <a href="/en/support/">support</a> channels.</p>
+
+    <h2 id="cookies">11. Website and cookies</h2>
+    <p>hexrun.co sets no cookies, runs no analytics or ad tracking and loads no third-party scripts or fonts. Our server may keep standard access logs (IP address, time, page requested) for security and operations. Your email is only sent to our API if you submit the waitlist form.</p>
+
+    <h2 id="waitlist">12. Waitlist</h2>
+    <p>We process the email address and language you enter on the waitlist only to tell you about HexRun's launch and early access invitations, based on your consent. You can leave the list via the link in every email or by writing to {{email.kvkk}}.</p>
+
+    <h2 id="security">13. Security</h2>
+    <p>Data is encrypted in transit with TLS; access is limited to staff who need it for their role and is logged. Reducing raw location data to cell lists after 30 days also limits the impact of any breach. If a breach occurs, we notify the authorities and you within the periods required by the GDPR and KVKK.</p>
+
+    <h2 id="changes">14. Changes and contact</h2>
+    <p>We may update this policy and will announce significant changes in the app before they take effect. Questions: {{email.kvkk}}.</p>
+    <p class="muted small">This English version is provided for convenience; if it conflicts with the Turkish text, the Turkish text prevails. <a href="/gizlilik/" hreflang="tr" lang="tr">Türkçe oku</a>.</p>
+  </div>
+</div>
