@@ -11,7 +11,7 @@ if [[ -n "${GOOGLE_SERVICES_JSON:-}" && ! -f app/google-services.json ]]; then
   printf '%s' "$GOOGLE_SERVICES_JSON" > app/google-services.json
 fi
 
-./gradlew --no-daemon --stacktrace -PwithAndroid \
+./gradlew --no-daemon --continue -PwithAndroid \
   :core:test \
   :app:testDebugUnitTest \
   :app:lintDebug \

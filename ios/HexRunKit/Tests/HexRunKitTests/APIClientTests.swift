@@ -28,6 +28,8 @@ final class StubProtocol: URLProtocol {
         Self.record("\(req.httpMethod ?? "") \(req.url?.path ?? "") \(req.value(forHTTPHeaderField: "Authorization") ?? "-")")
         let (status, data, delay) = h?(req, body) ?? (500, Data(), 0)
         let finish = { [self] in
+            // İptal edilen (ör. zaman aşımı) isteğe yanıt iletilmez: Linux Foundation bunu yakalayıp çöker.
+            if self.isStopped { return }
             let resp = HTTPURLResponse(url: req.url!, statusCode: status, httpVersion: "HTTP/1.1", headerFields: nil)!
             client?.urlProtocol(self, didReceive: resp, cacheStoragePolicy: .notAllowed)
             client?.urlProtocol(self, didLoad: data)
@@ -36,7 +38,11 @@ final class StubProtocol: URLProtocol {
         if delay > 0 { DispatchQueue.global().asyncAfter(deadline: .now() + delay) { finish() } } else { finish() }
     }
 
-    override func stopLoading() {}
+    private let stopLock = NSLock()
+    private var _stopped = false
+    private var isStopped: Bool { stopLock.lock(); defer { stopLock.unlock() }; return _stopped }
+
+    override func stopLoading() { stopLock.lock(); _stopped = true; stopLock.unlock() }
 
     static func session() -> URLSession {
         let c = URLSessionConfiguration.ephemeral
