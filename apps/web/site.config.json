@@ -7,13 +7,13 @@
   "playUrl": "[PLAY_URL]",
   "appScheme": "hexrun",
   "ios": {
-    "teamId": "[APPLE_TEAM_ID]",
+    "teamId": "MYJR9Y8N7A",
     "bundleId": "co.hexrun.app"
   },
   "android": {
     "packageName": "co.hexrun.app",
     "sha256Fingerprints": [
-      "[ANDROID_SHA256_CERT_FINGERPRINT]"
+      "70:7D:77:4B:BE:5A:B0:6A:F4:3A:8E:B5:ED:8A:0C:29:22:58:20:AF:7C:DA:28:2F:87:8E:AF:18:A2:CB:A8:59"
     ]
   },
   "company": {
