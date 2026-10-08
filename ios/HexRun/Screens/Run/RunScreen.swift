@@ -249,7 +249,6 @@ struct ConquestOverlay: View {
         .background(t.c.bg.ignoresSafeArea())
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isModal)
-        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("conquest")
         .task(id: conquest.loop.index) { await play() }
     }

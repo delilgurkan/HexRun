@@ -388,7 +388,6 @@ struct NotificationRow: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(n.read ? "" : "Okunmamış. ")\(n.title). \(n.body)")
         .accessibilityAddTraits(.isButton)
-        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("notif-\(n.id)")
     }
 
