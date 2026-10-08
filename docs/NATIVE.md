@@ -57,3 +57,17 @@ Bu geliştirme ortamında iOS SDK ve Android SDK yoktur. Doğrulama iki katmanl�
 1. Yerel: `ios/HexRunKit` (Swift paketi) Linux'ta `swift test` ile; `android/core` (saf Kotlin/JVM) `./gradlew :core:test` ile.
 2. CI (`.github/workflows/native.yml`): macOS'ta XcodeGen + `xcodebuild test` (iOS simülatörü) ve watchOS derlemesi;
    Ubuntu'da Android `assembleDebug`, birim testleri, lint ve Wear OS derlemesi.
+
+## Telefon ↔ saat protokolü (watchOS: WatchConnectivity, Wear OS: Wearable Data Layer)
+
+Telefon koşuyu kaydeder (yetkili kaynak), saat canlı gösterir ve bilekte titreşir. Tüm yükler JSON nesnesidir
+(watchOS'ta `[String: Any]` sözlüğü, Wear OS'ta UTF-8 JSON bayt dizisi).
+
+| Yön | watchOS | Wear OS | Yük |
+|---|---|---|---|
+| Telefon → saat, sürekli durum (en son durum kazanır) | `updateApplicationContext` | `DataClient` `PutDataMapRequest("/hexrun/hud")`, anahtar `json` | `{"type":"hud","state":"idle"\|"running"\|"paused"\|"finished","distanceM":6120,"durationMs":1977000,"paceSecPerKm":323,"distToStartM":85,"armed":true,"closingMode":true,"events":["morning","blitz"],"duel":{"opponent":"Zeynep","coveredCells":40,"totalCells":48}\|null,"ts":1791300000000}` |
+| Telefon → saat, anlık olay | `sendMessage` (ulaşılamazsa `transferUserInfo`) | `MessageClient` yol `/hexrun/event` | `{"type":"tick"}` (yaklaşma tık), `{"type":"conquest","cells":62,"areaM2":19220,"captured":48}`, `{"type":"loop_open"}` |
+| Saat → telefon, komut | `sendMessage` | `MessageClient` yol `/hexrun/command` | `{"type":"command","action":"pause"\|"resume"\|"finish"}` (finish yalnız saatte 1,5 sn basılı tutunca) |
+
+Saat yükleri sürüm alanı taşımaz; bilinmeyen alanlar yok sayılır, eksik alanlar varsayılan değer alır.
+Saat ekranları: `s17-saat` artboard'u (her zaman koyu, tek büyük rakam; koşu, yaklaşma, düello halkası, fetih).
