@@ -7,6 +7,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import co.hexrun.app.data.LocPerm
 import co.hexrun.app.data.NotifPerm
@@ -79,7 +80,7 @@ class ScreensTest {
     @Test
     fun profileSetupNeighborRuleAndSubmitEnabled() {
         set { ProfileSetupContent(ProfileSetupUi(username = "deniz", slot = Slot.LAC, mine = "deniz"), {}, {}, {}, {}) }
-        rule.onNodeWithText(S.profileSetup.neighborRule("Lacivert")).assertIsDisplayed()
+        rule.onNodeWithText(S.profileSetup.neighborRule("Lacivert")).performScrollTo().assertIsDisplayed()
         rule.onNodeWithText(S.profileSetup.submit).assertIsEnabled()
     }
 
