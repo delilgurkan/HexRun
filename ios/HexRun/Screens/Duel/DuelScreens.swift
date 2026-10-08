@@ -36,6 +36,7 @@ struct DuelSelectScreen: View {
         }
         .background(t.c.bg.ignoresSafeArea())
         .task { await m.load() }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("duel-select")
     }
 
@@ -196,6 +197,7 @@ struct DuelScreen: View {
             .accessibilityIdentifier("siege-cta")
             if !defending { HXButton(S.siege.cancelDuel, kind: .ghost) { confirmCancel = true } }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier(defending ? "siege" : "attack")
     }
 }

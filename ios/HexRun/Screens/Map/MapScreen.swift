@@ -28,6 +28,7 @@ struct MapScreen: View {
                 onPlayerTap: { p in if let m = p.marker { router.regionCell = H3.cellOf(m) } }
             )
             .ignoresSafeArea()
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("map-screen")
             if model.loading { HexTexture(opacity: 0.9).ignoresSafeArea() }
             overlays
@@ -143,6 +144,7 @@ struct FirstLoopCard: View {
             HXButton(S.map.firstLoopCta, big: true, action: onStart).accessibilityIdentifier("first-loop-start")
             HXButton(S.map.ownRoute, kind: .ghost, action: onDismiss).frame(maxWidth: .infinity)
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("first-loop")
     }
 }
@@ -160,6 +162,7 @@ struct OfflineCard: View {
             Text(S.map.offlineBody(minutes)).hx(.body, tone: 2)
             HXButton(S.common.retry, kind: .secondary, action: onRetry)
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("offline-card")
     }
 }
@@ -186,6 +189,7 @@ struct SiegeBanner: View {
             }
             HatView(power: duel.power, progress: duel.progress, ownerColor: t.player(ownerSlot), attackerColor: t.player(duel.attacker.slot), size: .sm)
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("siege-banner")
     }
 }
@@ -340,6 +344,7 @@ struct RegionContent: View {
                 .padding(Space.gutter)
                 .accessibilityIdentifier("region-cta")
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("region")
     }
 }

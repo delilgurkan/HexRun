@@ -46,6 +46,7 @@ struct OnboardingScreen: View {
             .padding(.bottom, 16)
         }
         .background(t.c.bg.ignoresSafeArea())
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("onboarding")
     }
 
@@ -170,6 +171,7 @@ struct PermissionsScreen: View {
         .padding(.top, 24)
         .padding(.bottom, 16)
         .background(t.c.bg.ignoresSafeArea())
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("permissions")
     }
 

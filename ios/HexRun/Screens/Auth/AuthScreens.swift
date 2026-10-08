@@ -67,6 +67,7 @@ struct AuthScreen: View {
         } message: {
             Text(alert ?? model.error ?? "")
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("auth")
     }
 

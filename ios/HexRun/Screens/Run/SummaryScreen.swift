@@ -204,6 +204,7 @@ struct SummaryContent: View {
                 HXButton(S.common.done, action: onDone)
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("summary-review")
     }
 }

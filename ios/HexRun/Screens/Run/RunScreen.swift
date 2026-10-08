@@ -43,6 +43,7 @@ struct RunScreen: View {
             }
         }
         .interactiveDismissDisabled()
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("run-screen")
     }
 
@@ -139,6 +140,7 @@ struct RunScreen: View {
             metric(S.run.distanceKm, Fmt.km(tr.distanceM), big: true)
             metricsRow([(S.run.pacePerKm, Fmt.pace(tr.paceSecPerKm)), (S.run.time, Fmt.duration(snap.elapsedMs))])
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("run-hud")
     }
 
@@ -247,6 +249,7 @@ struct ConquestOverlay: View {
         .background(t.c.bg.ignoresSafeArea())
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isModal)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("conquest")
         .task(id: conquest.loop.index) { await play() }
     }

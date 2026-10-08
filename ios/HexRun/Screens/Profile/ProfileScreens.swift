@@ -41,6 +41,7 @@ struct ProfileScreen: View {
                 }
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("profile")
     }
 }
@@ -122,6 +123,7 @@ struct StatsTab: View {
             }
             Text("\(Fmt.int(s.cells)) petek").hx(.data, tone: 3)
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("stats")
     }
 }
@@ -194,6 +196,7 @@ struct BadgesTab: View {
             }
             HXButton(S.badges.emptyCta, big: true) { Task { await env.startRun() } }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("badges-empty")
     }
 
@@ -257,6 +260,7 @@ struct BadgesTab: View {
                 }
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("badges")
     }
 }
@@ -338,6 +342,7 @@ struct BadgeDetailScreen: View {
             }
             if let e = model.error { Text(e).hx(.callout) }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("badge-detail")
     }
 }
@@ -376,6 +381,7 @@ struct FriendsTab: View {
             }
             await m.load()
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("friends")
     }
 

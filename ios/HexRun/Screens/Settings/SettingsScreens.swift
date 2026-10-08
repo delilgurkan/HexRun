@@ -55,6 +55,7 @@ struct SettingsScreen: View {
             Button(S.common.cancel, role: .cancel) {}
             Button(S.settings.deleteConfirm, role: .destructive) { Task { _ = await model.deleteAccount() } }
         } message: { Text(S.settings.deleteConfirmBody) }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("settings")
     }
 
@@ -133,6 +134,7 @@ struct PrivacyScreen: View {
             Text(S.privacy.footnote).hx(.callout, tone: 3)
         }
         .onAppear { m.currentLocation = { await env.currentLocation() } }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("privacy")
     }
 }
@@ -193,6 +195,7 @@ struct IntegrationsScreen: View {
             Button(S.integrations.disconnect, role: .destructive) { if let p = confirm { Task { await m.disconnect(p) } } }
             Button(S.common.cancel, role: .cancel) {}
         } message: { Text(confirm.flatMap { S.integrations.names[$0] } ?? "") }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("integrations")
     }
 
@@ -320,6 +323,7 @@ struct StoryCard: View {
         .environment(\.theme, theme)
         .dynamicTypeSize(.large)
         .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("story-card")
     }
 }

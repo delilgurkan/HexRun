@@ -94,6 +94,7 @@ struct LeagueScreen: View {
         }
         .toolbar(.hidden, for: .navigationBar)
         .task { await m.load() }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("league")
     }
 }
@@ -227,6 +228,7 @@ struct TeamScreen: View {
             Text(S.team.noTeamBody).hx(.callout, tone: 3)
             HXButton(S.team.leave, kind: .danger) { confirmLeave = true }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("team")
     }
 }
@@ -346,6 +348,7 @@ struct NotificationsScreen: View {
             }
         }
         .task { await m.load() }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("notifications")
     }
 }
