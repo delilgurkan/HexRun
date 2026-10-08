@@ -149,6 +149,7 @@ struct BadgesTab: View {
                     Text(S.common.errorCode(model.errorCode)).hx(.data, tone: 3)
                 }
                 .padding(.vertical, 12)
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("badges-error")
             } else {
                 ZStack(alignment: .topLeading) {
@@ -163,6 +164,7 @@ struct BadgesTab: View {
                 .frame(minHeight: 320, alignment: .top)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(S.badges.loading)
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("badges-loading")
             }
         }
@@ -216,6 +218,7 @@ struct BadgesTab: View {
                     }
                     HXButton(S.common.done) { model.dismissIntro() }
                 }
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("insignia-intro")
             }
             SectionTitle(S.badges.insignia) { Text(S.badges.insigniaMeta(filled)).hx(.data, tone: 2) }

@@ -78,6 +78,7 @@ struct MapScreen: View {
                 }
                 if let chip = model.eventsChip {
                     Chip(label: chip, icon: .events, glass: true) { router.tab = .events }
+                        .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("events-chip")
                 }
                 if model.loading { Chip(label: S.map.loadingRegions, glass: true).accessibilityIdentifier("map-loading") }
@@ -224,6 +225,7 @@ struct RegionSheet: View {
                     Spacer()
                 }
                 .padding(Space.gutter)
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("region-loading")
             }
             IconButton(.close, label: S.common.close) { dismiss() }.padding(8)

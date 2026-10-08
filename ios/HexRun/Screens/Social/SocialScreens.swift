@@ -40,10 +40,12 @@ struct LeagueScreen: View {
                     Spacer()
                 }
                 .padding(.horizontal, Space.gutter)
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("league-loading")
             } else if m.failed && m.league.value == nil {
                 StateBlock(title: S.league.errorTitle, action: S.common.retry) { Task { await m.load() } }
                     .padding(.horizontal, Space.gutter)
+                    .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("league-error")
                 Spacer()
             } else if m.empty {
@@ -53,6 +55,7 @@ struct LeagueScreen: View {
                     Spacer()
                 }
                 .padding(.horizontal, Space.gutter)
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("league-empty")
             } else {
                 if let stale = m.staleLabel() {
@@ -66,6 +69,7 @@ struct LeagueScreen: View {
                     }
                     .padding(.horizontal, Space.gutter)
                     .padding(.bottom, 8)
+                    .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("league-stale")
                 }
                 ScrollView {
@@ -126,6 +130,7 @@ struct LeagueRowView: View {
         .opacity(faded ? 0.5 : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(S.league.rankA11y(r.rank, r.isMe ? S.common.you : r.name, Fmt.area(r.valueM2)))
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier(pinned ? "league-me" : "league-row-\(r.rank)")
     }
 }
@@ -157,6 +162,7 @@ struct TeamScreen: View {
                     }
                     if let e = m.error { Text(e).hx(.callout) }
                 }
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("no-team")
             } else if m.team.isFailed {
                 StateBlock(title: S.common.genericError, action: S.common.retry) { Task { await m.load() } }
@@ -259,6 +265,7 @@ struct EventsScreen: View {
                     if hero.participantsToday > 0 { Text(S.events.participants(Fmt.int(hero.participantsToday))).hx(.callout) }
                     HXButton(S.map.start, big: true) { Task { await env.startRun() } }
                 }
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("event-hero")
             } else {
                 StateBlock(icon: .events, title: S.events.noneActive, bodyText: S.events.noneActiveBody)
@@ -299,6 +306,7 @@ struct EventsScreen: View {
                 m.tick()
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("events")
     }
 }
@@ -330,7 +338,7 @@ struct NotificationsScreen: View {
             } else if m.items.isFailed && (m.items.value ?? []).isEmpty {
                 StateBlock(title: S.notifications.error, action: S.common.retry) { Task { await m.load() } }
             } else if (m.items.value ?? []).isEmpty {
-                StateBlock(icon: .bell, title: S.notifications.empty).accessibilityIdentifier("notifications-empty")
+                StateBlock(icon: .bell, title: S.notifications.empty).accessibilityElement(children: .contain).accessibilityIdentifier("notifications-empty")
             } else {
                 ForEach(m.sections()) { sec in
                     Text(sec.title).hx(.label, tone: 2).accessibilityAddTraits(.isHeader).padding(.top, 8)
@@ -381,6 +389,7 @@ struct NotificationRow: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(n.read ? "" : "Okunmamış. ")\(n.title). \(n.body)")
         .accessibilityAddTraits(.isButton)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("notif-\(n.id)")
     }
 

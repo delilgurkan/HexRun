@@ -21,6 +21,7 @@ struct SummaryScreen: View {
                             HXButton(S.summary.share, icon: .share, big: true) { shareId = IdentifiedString(id: s.id) }
                         }
                         HXButton(S.summary.toMap, kind: s.totalGainedAreaM2 > 0 ? .secondary : .primary, big: true) { done() }
+                            .accessibilityElement(children: .contain)
                             .accessibilityIdentifier("summary-done")
                     }
                 }) {
@@ -31,6 +32,7 @@ struct SummaryScreen: View {
                         router.cover = .duelSelect(DuelSelectRequest(cell: sg.cells.first ?? "", preselected: sg.cells, defenderId: sg.defender.id))
                     })
                 }
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("summary")
                 .sheet(item: $shareId) { r in
                     NavigationStack { ShareScreen(app: env.app, runId: r.id) }.environment(\.theme, t)
@@ -52,6 +54,7 @@ struct SummaryScreen: View {
                         StateBlock(title: S.common.genericError, action: S.common.retry) { Task { await model.retry() } }
                     }
                 }
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("summary-pending")
             }
         }
@@ -96,6 +99,7 @@ struct SummaryContent: View {
                 }
                 if let g = s.openGapM { HXButton(S.summary.makeLoop(Int(g.rounded())), big: true, action: onMakeLoop) }
             }
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("summary-open")
         case .closed, .suggestion:
             VStack(alignment: .leading, spacing: 16) {
@@ -118,6 +122,7 @@ struct SummaryContent: View {
                     Text(S.summary.streak(s.streakDays)).hx(.callout, tone: 2)
                 }
             }
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier(v == .suggestion ? "summary-suggestion" : "summary-closed")
         }
     }
@@ -167,6 +172,7 @@ struct SummaryContent: View {
                 HXButton(S.summary.editArea) { onEditSuggestion(sg) }.accessibilityIdentifier("edit-suggestion")
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("suggestion-card")
     }
 
