@@ -48,7 +48,7 @@ xcconfig'te `//` yorum başlattığından URL'ler `https:/$()/...` biçiminde ya
 
 | Anahtar | Açıklama |
 |---|---|
-| `API_BASE_URL` | Sunucu (Debug: `http://localhost:3000`, Release: `https://api.hexrun.co`) |
+| `API_BASE_URL` | Sunucu (Debug: `http://localhost:8080`, Release: `https://api.hexrun.co`) |
 | `MAP_STYLE_URL`, `MAP_STYLE_URL_DARK` | MapLibre stil JSON'u (varsayılan OpenFreeMap positron/dark) |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_REVERSED_CLIENT_ID` | Google Sign-In iOS istemcisi ve URL şeması |
 | `DEVELOPMENT_TEAM` | İmzalama takımı |

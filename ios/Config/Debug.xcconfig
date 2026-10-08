@@ -1,4 +1,4 @@
 #include "Shared.xcconfig"
-API_BASE_URL = http:/$()/localhost:3000
+API_BASE_URL = http:/$()/localhost:8080
 APS_ENVIRONMENT = development
 #include? "Local.xcconfig"
