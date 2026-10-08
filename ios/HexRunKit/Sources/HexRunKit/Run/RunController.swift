@@ -24,9 +24,9 @@ public protocol RunHaptics: AnyObject {
 @MainActor
 public protocol ScreenAwake: AnyObject { func setAwake(_ on: Bool) }
 
-/// Saat aynası (WatchConnectivity).
+/// Saat aynası (WatchConnectivity): `hud` sürekli durum, diğerleri anlık olay.
 @MainActor
-public protocol RunMirror: AnyObject { func publish(_ s: WatchRunState) }
+public protocol RunMirror: AnyObject { func publish(_ p: WatchPayload) }
 
 public struct ConquestState: Hashable, Sendable {
     public var loop: ClosedLoop
@@ -77,7 +77,7 @@ public final class RunController {
     private func publish() {
         snapshot = session?.snapshot()
         trace = session?.points.map(\.latLng) ?? []
-        mirror?.publish(watchState())
+        mirror?.publish(.hud(watchHud()))
     }
 
     /// Uygulama açılışında yarım kalan koşuyu geri yükler.
@@ -117,18 +117,18 @@ public final class RunController {
         guard let last = points.last, let s = session else { return }
         gps = gpsQuality(last.acc)
         let events = s.addPoints(points)
-        var haptic: String?
+        var instant: [WatchPayload] = []
         for e in events {
             switch e {
             case let .tick(st):
                 haptics.tick(st)
-                haptic = st == .double ? "double" : "tick"
+                instant.append(.tick)
             case let .loopClosed(loop):
                 haptics.closeImpact()
                 let preview = Conquest.preview(loop: loop, conquestContext())
                 conquest = ConquestState(loop: loop, preview: preview, shownAt: now())
                 s.markLoopsShown(loop.index)
-                haptic = "close"
+                instant.append(.conquest(.init(cells: preview.empty + preview.own + preview.duels.reduce(0) { $0 + $1.inside }, areaM2: preview.areaM2, captured: preview.duels.reduce(0) { $0 + $1.inside })))
             case .closingEnter, .closingExit:
                 lastPreviewBucket = -1
             }
@@ -136,9 +136,8 @@ public final class RunController {
         updateClosingPreview()
         snapshot = s.snapshot()
         trace = s.points.map(\.latLng)
-        var w = watchState()
-        w.haptic = haptic
-        mirror?.publish(w)
+        mirror?.publish(.hud(watchHud()))
+        for p in instant { mirror?.publish(p) }
     }
 
     private func updateClosingPreview() {
@@ -159,16 +158,28 @@ public final class RunController {
     public func setLocked(_ l: Bool) { locked = l }
 
     /// Saniyelik HUD yenilemesi (süre).
-    public func refresh() { if session != nil { snapshot = session?.snapshot(); mirror?.publish(watchState()) } }
+    public func refresh() { if session != nil { snapshot = session?.snapshot(); mirror?.publish(.hud(watchHud())) } }
+
+    /// Saatten gelen komut (pause/resume; finish uygulama katmanında özet akışıyla işlenir).
+    /// `finish` için true döner: çağıran `finish()` ile bitirip özeti açar.
+    public func handle(_ action: WatchPayload.Action) -> Bool {
+        switch action {
+        case .pause: pause(); return false
+        case .resume: resume(); return false
+        case .finish: return isActive
+        }
+    }
 
     /// Bitir: kuyruğa koy, göndermeyi dene, oturumu kapat. clientRunId döner (nokta yoksa nil).
     public func finish() async -> String? {
         guard let s = session else { return nil }
         location.stopRunUpdates()
         awake.setAwake(false)
+        let closedAny = !(snapshot?.tracker.loops.isEmpty ?? true)
         let req = try? s.finish(source: .phone, device: device)
         onActivity?(false)
-        end()
+        if !closedAny { mirror?.publish(.loopOpen) }
+        end(finished: true)
         guard let req, req.points.count >= 2 else { return nil }
         await queue.enqueue(req)
         Task { await queue.flush() }
@@ -180,32 +191,28 @@ public final class RunController {
         awake.setAwake(false)
         session?.discard()
         onActivity?(false)
-        end()
+        end(finished: false)
     }
 
-    private func end() {
+    private func end(finished: Bool) {
         session = nil
         snapshot = nil
         conquest = nil
         locked = false
         closingPreview = nil
         trace = []
-        mirror?.publish(.idle)
+        mirror?.publish(.hud(WatchPayload.Hud(state: finished ? .finished : .idle, ts: now())))
     }
 
-    public func watchState() -> WatchRunState {
-        guard let snap = snapshot ?? session?.snapshot() else { return .idle }
+    /// Saate giden sürekli HUD durumu.
+    public func watchHud() -> WatchPayload.Hud {
+        guard let snap = snapshot ?? session?.snapshot() else { return WatchPayload.Hud(state: .idle, ts: now()) }
         let t = snap.tracker
-        let phase: WatchRunState.Phase = conquest != nil ? .conquest : snap.status == .paused ? .paused : t.closingMode ? .closing : .running
-        let duel = closingPreview?.duels.first
-        var bearing: Double?
-        if let s = t.start, let l = snap.lastPoint { bearing = initialBearing(from: l.latLng, to: s.latLng) }
-        return WatchRunState(
-            phase: phase, distanceM: t.distanceM, paceSecPerKm: t.paceSecPerKm, elapsedMs: snap.elapsedMs,
-            remainingM: closingRemainingM(t.distToStartM), bearingToStart: bearing,
-            duelName: duel.map { Fmt.firstName($0.duel.defender.displayName) }, duelInside: duel?.inside, duelTotal: duel?.total,
-            conquestCells: conquest.map { $0.preview.empty + $0.preview.own }, conquestAreaM2: conquest?.preview.areaM2,
-            sentAt: now()
+        let duel = (closingPreview?.duels.first).map { WatchPayload.Duel(opponent: Fmt.firstName($0.duel.defender.displayName), coveredCells: $0.inside, totalCells: $0.total) }
+        return WatchPayload.Hud(
+            state: snap.status == .paused ? .paused : .running, distanceM: t.distanceM, durationMs: snap.elapsedMs,
+            paceSecPerKm: t.paceSecPerKm, distToStartM: t.distToStartM, armed: t.armed, closingMode: t.closingMode,
+            events: GameEvents.active(ms: now()).map(\.id.rawValue), duel: duel, ts: now()
         )
     }
 }

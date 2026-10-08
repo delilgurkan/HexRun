@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">HexRun</string>
+
+    <!-- Boşta -->
+    <string name="idle_title" translatable="false">HexRun</string>
+    <string name="idle_body">Telefonda koşuya başla</string>
+    <string name="idle_hint">Saat canlı göstergeyi gösterir, halkayı kapatırken bilekte titrer.</string>
+
+    <!-- Koşu -->
+    <string name="unit_km">km</string>
+    <string name="run_key">Koşu</string>
+    <string name="loop_open">Halka açık · %1$s</string>
+    <string name="close_loop">Halkayı kapat</string>
+    <string name="approach_value">%1$d m</string>
+    <string name="approach_sub">başlangıca</string>
+    <string name="duel_key">Düello · %1$s</string>
+    <string name="cells_covered">petek dolaşıldı</string>
+    <string name="paused">Duraklatıldı</string>
+    <string name="paused_hint">Dokun: devam</string>
+    <string name="hold_to_finish">Bitirmek için basılı tut</string>
+
+    <!-- Fetih -->
+    <string name="conquest_key">Fetih</string>
+    <string name="cells_yours">petek senin</string>
+    <string name="conquest_captured">%1$d petek rakipten</string>
+
+    <!-- Bitiş ve bağlantı -->
+    <string name="finishing">Koşu bitiriliyor</string>
+    <string name="finished_title">Koşu bitti</string>
+    <string name="finished_body">Özet telefonda</string>
+    <string name="stale_title">Telefonla bağlantı yok</string>
+    <string name="stale_body">Koşu telefonda sürüyor</string>
+    <string name="last_known">Son: %1$s km · %2$s</string>
+
+    <!-- TalkBack -->
+    <string name="action_pause">Duraklat</string>
+    <string name="action_resume">Devam et</string>
+    <string name="action_finish">Koşuyu bitir</string>
+    <string name="action_dismiss">Kapat</string>
+    <string name="cd_pace">tempo %1$d dakika %2$d saniye</string>
+    <string name="cd_pace_none">tempo yok</string>
+    <string name="cd_run">%1$s kilometre, %2$s, süre %3$s</string>
+    <string name="cd_approach">%1$d m · halkayı kapat. %2$s kilometre, süre %3$s</string>
+    <string name="cd_duel">%1$s ile düello: %2$d / %3$d petek dolaşıldı. %4$s kilometre, süre %5$s</string>
+    <string name="cd_paused">Duraklatıldı. %1$s kilometre, süre %2$s</string>
+    <string name="cd_conquest">Fetih: %1$s petek senin, %2$s</string>
+    <string name="cd_holding">Bitirmek için basılı tutuluyor</string>
+</resources>

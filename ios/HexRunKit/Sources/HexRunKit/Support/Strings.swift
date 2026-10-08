@@ -542,17 +542,4 @@ public enum S {
         public static let unavailable = "Bu cihazda paylaşım kullanılamıyor."
     }
 
-    public enum watch {
-        public static func loopOpen(_ d: String) -> String { "Halka açık · \(d)" }
-        public static let closeLoop = "Halkayı kapat"
-        public static let km = "km"
-        public static let startAhead = "başlangıca dön"
-        public static func duel(_ name: String) -> String { "Düello · \(name)" }
-        public static let duelCells = "petek dolaşıldı"
-        public static let conquest = "Fetih"
-        public static let conquestCells = "petek senin"
-        public static let idleTitle = "HexRun"
-        public static let idleBody = "Koşuyu telefondan başlat; saat canlı gösterir."
-        public static let paused = "Duraklatıldı"
-    }
 }

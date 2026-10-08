@@ -252,7 +252,11 @@ final class RunControllerTests: XCTestCase {
         func success() { log.append("success") }
     }
     @MainActor final class FakeAwake: ScreenAwake { var on = false; func setAwake(_ v: Bool) { on = v } }
-    @MainActor final class FakeMirror: RunMirror { var last: WatchRunState?; func publish(_ s: WatchRunState) { last = s } }
+    @MainActor final class FakeMirror: RunMirror {
+        var all: [WatchPayload] = []
+        var lastHud: WatchPayload.Hud? { all.reversed().compactMap { if case let .hud(h) = $0 { return h } else { return nil } }.first }
+        func publish(_ p: WatchPayload) { all.append(p) }
+    }
 
     @MainActor func testRunFlowEnqueuesRunAndMirrorsToWatch() async throws {
         let loc = FakeLocation(), hap = FakeHaptics(), awake = FakeAwake(), mirror = FakeMirror()
@@ -271,16 +275,23 @@ final class RunControllerTests: XCTestCase {
         XCTAssertGreaterThan(rc.conquest?.preview.cells.count ?? 0, 100)
         XCTAssertTrue(hap.log.contains("close"))
         XCTAssertTrue(hap.log.contains { $0.hasPrefix("tick") })
-        XCTAssertEqual(mirror.last?.phase, .conquest)
+        XCTAssertTrue(mirror.all.contains(.tick))
+        XCTAssertTrue(mirror.all.contains { if case let .conquest(c) = $0 { return c.cells > 100 } else { return false } })
+        XCTAssertEqual(mirror.lastHud?.state, .running)
+        XCTAssertGreaterThan(mirror.lastHud?.distanceM ?? 0, 1000)
+        XCTAssertFalse(rc.handle(.pause))
+        XCTAssertEqual(mirror.lastHud?.state, .paused)
+        XCTAssertFalse(rc.handle(.resume))
+        XCTAssertTrue(rc.handle(.finish))
         rc.dismissConquest()
-        XCTAssertEqual(mirror.last?.phase, .running)
         let id = await rc.finish()
         XCTAssertNotNil(id)
         XCTAssertFalse(rc.isActive)
         XCTAssertFalse(loc.running)
         XCTAssertFalse(awake.on)
         XCTAssertEqual(activity, [true, false])
-        XCTAssertEqual(mirror.last?.phase, .idle)
+        XCTAssertEqual(mirror.lastHud?.state, .finished)
+        XCTAssertFalse(mirror.all.contains(.loopOpen), "halka kapandıysa loop_open yok")
         await queue.flush()
         let st = await queue.status(id!)
         XCTAssertEqual(st, .done)
@@ -298,20 +309,5 @@ final class RunControllerTests: XCTestCase {
         XCTAssertEqual(rc2.snapshot?.pointCount, 2)
     }
 
-    func testWatchFaces() {
-        var s = WatchRunState(phase: .running, distanceM: 6_120, paceSecPerKm: 323, elapsedMs: 1_977_000, remainingM: 1_200)
-        XCTAssertEqual(s.face.value, "6,12")
-        XCTAssertEqual(s.face.foot, "5'23\" · 32:57")
-        XCTAssertEqual(s.face.kicker, "Halka açık · 1,2 km")
-        s.phase = .closing
-        s.remainingM = 85
-        XCTAssertEqual(s.face.value, "85 m")
-        s = WatchRunState(phase: .running, duelName: "Zeynep", duelInside: 22, duelTotal: 34)
-        XCTAssertEqual(s.face.value, "22/34")
-        XCTAssertEqual(s.face.ring ?? 0, 22.0 / 34.0, accuracy: 1e-9)
-        s = WatchRunState(phase: .conquest, conquestCells: 62, conquestAreaM2: 19_220)
-        XCTAssertEqual(s.face.foot, "+19.220 m²")
-        let back = WatchRunState(message: s.message)
-        XCTAssertEqual(back, s)
-    }
+
 }

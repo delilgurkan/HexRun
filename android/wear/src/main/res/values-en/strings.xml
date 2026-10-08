@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Idle -->
+    <string name="idle_body">Start a run on your phone</string>
+    <string name="idle_hint">Your watch shows the live HUD and buzzes as you close the loop.</string>
+
+    <!-- Run -->
+    <string name="unit_km">km</string>
+    <string name="run_key">Run</string>
+    <string name="loop_open">Loop open · %1$s</string>
+    <string name="close_loop">Close the loop</string>
+    <string name="approach_value">%1$d m</string>
+    <string name="approach_sub">to start</string>
+    <string name="duel_key">Duel · %1$s</string>
+    <string name="cells_covered">cells covered</string>
+    <string name="paused">Paused</string>
+    <string name="paused_hint">Tap to resume</string>
+    <string name="hold_to_finish">Hold to finish</string>
+
+    <!-- Conquest -->
+    <string name="conquest_key">Conquest</string>
+    <string name="cells_yours">cells are yours</string>
+    <string name="conquest_captured">%1$d taken from rivals</string>
+
+    <!-- Finish and connection -->
+    <string name="finishing">Finishing run</string>
+    <string name="finished_title">Run finished</string>
+    <string name="finished_body">Summary is on your phone</string>
+    <string name="stale_title">No connection to phone</string>
+    <string name="stale_body">Your run continues on the phone</string>
+    <string name="last_known">Last: %1$s km · %2$s</string>
+
+    <!-- TalkBack -->
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
+    <string name="action_finish">Finish run</string>
+    <string name="action_dismiss">Dismiss</string>
+    <string name="cd_pace">pace %1$d minutes %2$d seconds</string>
+    <string name="cd_pace_none">no pace</string>
+    <string name="cd_run">%1$s kilometres, %2$s, time %3$s</string>
+    <string name="cd_approach">%1$d m · close the loop. %2$s kilometres, time %3$s</string>
+    <string name="cd_duel">Duel with %1$s: %2$d of %3$d cells covered. %4$s kilometres, time %5$s</string>
+    <string name="cd_paused">Paused. %1$s kilometres, time %2$s</string>
+    <string name="cd_conquest">Conquest: %1$s cells are yours, %2$s</string>
+    <string name="cd_holding">Holding to finish</string>
+</resources>
