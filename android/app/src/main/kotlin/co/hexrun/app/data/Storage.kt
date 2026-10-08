@@ -79,7 +79,7 @@ class FileKeyValueStore(context: Context, dirName: String = "kv") : KeyValueStor
         lock.withLock { runCatching { String(file(key).readFully(), Charsets.UTF_8) }.getOrNull() }
     }
 
-    override suspend fun set(key: String, value: String) = withContext(Dispatchers.IO) {
+    override suspend fun set(key: String, value: String): Unit = withContext(Dispatchers.IO) {
         lock.withLock {
             val f = file(key)
             var out: FileOutputStream? = null
@@ -93,7 +93,7 @@ class FileKeyValueStore(context: Context, dirName: String = "kv") : KeyValueStor
         }
     }
 
-    override suspend fun remove(key: String) = withContext(Dispatchers.IO) { lock.withLock { file(key).delete() } }
+    override suspend fun remove(key: String): Unit = withContext(Dispatchers.IO) { lock.withLock { file(key).delete() } }
 }
 
 /**
@@ -104,7 +104,7 @@ class FileAppendLog(context: Context, name: String = "active-run.jsonl") : Appen
     private val file = File(context.filesDir, name)
     private val lock = Mutex()
 
-    override suspend fun append(lines: List<String>) = withContext(Dispatchers.IO) {
+    override suspend fun append(lines: List<String>): Unit = withContext(Dispatchers.IO) {
         if (lines.isEmpty()) return@withContext
         lock.withLock {
             FileOutputStream(file, true).use { os ->
@@ -118,5 +118,5 @@ class FileAppendLog(context: Context, name: String = "active-run.jsonl") : Appen
         lock.withLock { if (file.exists()) file.readLines(Charsets.UTF_8).filter { it.isNotBlank() } else emptyList() }
     }
 
-    override suspend fun clear() = withContext(Dispatchers.IO) { lock.withLock { if (file.exists()) file.delete(); Unit } }
+    override suspend fun clear(): Unit = withContext(Dispatchers.IO) { lock.withLock { if (file.exists()) file.delete() }; Unit }
 }

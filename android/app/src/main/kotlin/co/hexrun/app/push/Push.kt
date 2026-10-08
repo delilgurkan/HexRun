@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import co.hexrun.app.BuildConfig
 import co.hexrun.app.HexRunApp
+import co.hexrun.app.launchSafe
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.messaging.FirebaseMessaging

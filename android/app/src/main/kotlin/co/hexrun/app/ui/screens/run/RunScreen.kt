@@ -114,7 +114,7 @@ fun RunScreen(defend: String?, attack: String?, firstLoop: Boolean) {
     // Saatten "bitir" gelirse özete geç.
     LaunchedEffect(state.finishedRunId, state.active) {
         val id = state.finishedRunId
-        if (!state.active && id != null) {
+        if (!state.active && id != null && !finishing) {
             controller.consumeFinished()
             nav.reset(Routes.summary(clientRunId = id))
         }
