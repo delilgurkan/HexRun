@@ -102,7 +102,7 @@ describe('düello başlatma', () => {
     const ring = (k: number) => big.filter((c) => disk(k).includes(c) && !disk(k - 1).includes(c));
     // Halka şeritleri bağlıdır.
     const r = [ring(2), ring(4), ring(6), ring(8)];
-    r.forEach((cells, i) => expect(cells.length).toBeLessThanOrEqual(60) || i);
+    for (const cells of r) expect(cells.length).toBeLessThanOrEqual(60);
     expect(typeof createDuel(w, 'd1', 'a', r[0]!, 1)).toBe('object');
     expect(typeof createDuel(w, 'd2', 'a', r[1]!, 1)).toBe('object');
     expect(typeof createDuel(w, 'd3', 'a', r[2]!.slice(0, 7).length === 7 ? bfs(r[2]!) : r[2]!, 1)).toBe('object');
