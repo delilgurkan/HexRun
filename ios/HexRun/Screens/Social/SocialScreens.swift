@@ -130,7 +130,6 @@ struct LeagueRowView: View {
         .opacity(faded ? 0.5 : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(S.league.rankA11y(r.rank, r.isMe ? S.common.you : r.name, Fmt.area(r.valueM2)))
-        .accessibilityElement(children: .contain)
         .accessibilityIdentifier(pinned ? "league-me" : "league-row-\(r.rank)")
     }
 }

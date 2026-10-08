@@ -164,7 +164,6 @@ struct BadgesTab: View {
                 .frame(minHeight: 320, alignment: .top)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(S.badges.loading)
-                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("badges-loading")
             }
         }
