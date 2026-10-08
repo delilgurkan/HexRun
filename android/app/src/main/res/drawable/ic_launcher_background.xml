@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Marka zemini (hexrun-icon.svg ile aynı: #141716). -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="#0F1312" />
+    <solid android:color="#141716" />
 </shape>

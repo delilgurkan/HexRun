@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- HexRun markası (apps/web/src/static/assets/brand/hexrun-icon.svg ile aynı çizim).
-     Grup 120'lik marka uzayını 108'lik uyarlanabilir ikon tuvaline oturtur: p' = 0.82p + (4.8, 6.44). -->
+<!-- Android 13+ temalı ikon: sistem tek renk basar, bu yüzden markanın beyaz üçgeni
+     altıgen konturuyla birleşip leke oluşturuyor; burada yalnız altıgen bırakıldı.
+     Geometri hexrun-icon.svg ile aynı: p' = 0.82p + (4.8, 6.44). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -13,13 +14,9 @@
         android:translateY="6.44">
         <path
             android:pathData="M60,24 L89.4,41 V75 L60,92 L30.6,75 V41 Z"
-            android:fillColor="#E69F00"
-            android:fillAlpha="0.28"
-            android:strokeColor="#E69F00"
+            android:fillColor="#00000000"
+            android:strokeColor="#000000"
             android:strokeWidth="7"
             android:strokeLineJoin="round" />
-        <path
-            android:pathData="M45,73 L56,92 L34,92 Z"
-            android:fillColor="#F7F6F1" />
     </group>
 </vector>
