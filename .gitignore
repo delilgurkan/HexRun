@@ -8,5 +8,18 @@ coverage/
 *.log
 .DS_Store
 web-build/
-ios/
-android/
+apps/mobile/ios/
+apps/mobile/android/
+# native
+.build/
+.swiftpm/
+*.xcodeproj/
+xcuserdata/
+DerivedData/
+.gradle/
+build/
+local.properties
+*.keystore
+!debug.keystore
+google-services.json
+GoogleService-Info.plist

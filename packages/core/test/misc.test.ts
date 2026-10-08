@@ -266,3 +266,15 @@ describe('biçim', () => {
     expect(RULES.H3_RES).toBe(12);
   });
 });
+
+describe('Hat', () => {
+  it('10 segment, sahip / kuşatma / hayalet', async () => {
+    const { hatSegments } = await import('../src/index.js');
+    const s = hatSegments(85, 60, 0);
+    expect(s).toHaveLength(10);
+    expect(s[7]).toEqual({ owner: 100, siege: 0, ghost: 0 });
+    expect(s[8]).toEqual({ owner: 50, siege: 0, ghost: 0 });
+    expect(s[5]).toEqual({ owner: 100, siege: 100, ghost: 0 });
+    expect(hatSegments(150, -5, NaN)[9]).toEqual({ owner: 100, siege: 0, ghost: 0 });
+  });
+});

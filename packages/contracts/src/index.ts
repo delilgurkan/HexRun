@@ -108,6 +108,8 @@ export interface PrivacyRequest {
 export interface PushTokenRequest {
   token: string;
   platform: Platform;
+  /** Native: iOS "apns", Android "fcm". Yoksa jeton biçiminden çıkarılır. */
+  provider?: 'apns' | 'fcm' | 'expo';
 }
 
 /* ─────────────── Harita ─────────────── */

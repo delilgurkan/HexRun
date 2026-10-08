@@ -19,6 +19,17 @@ const schema = z.object({
   SMTP_URL: z.string().optional(),
   MAIL_FROM: z.string().default('HexRun <no-reply@hexrun.co>'),
   EXPO_ACCESS_TOKEN: z.string().optional(),
+  /** APNs jeton tabanlı kimlik (.p8). */
+  APNS_KEY_ID: z.string().optional(),
+  APNS_TEAM_ID: z.string().optional(),
+  APNS_KEY_P8: z.string().optional(),
+  APNS_TOPIC: z.string().default('co.hexrun.app'),
+  APNS_PRODUCTION: z
+    .string()
+    .default('true')
+    .transform((v) => v === 'true'),
+  /** FCM HTTP v1 hizmet hesabı JSON'u (tek satır). */
+  FCM_SERVICE_ACCOUNT_JSON: z.string().optional(),
   PUSH_ENABLED: z
     .string()
     .default('true')

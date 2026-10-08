@@ -1,0 +1,120 @@
+[
+ {
+  "viewer": "me",
+  "nodes": [
+   {
+    "id": "me",
+    "slot": "keh"
+   },
+   {
+    "id": "n1",
+    "slot": "keh"
+   },
+   {
+    "id": "n2",
+    "slot": "mer"
+   },
+   {
+    "id": "n3",
+    "slot": "zum"
+   },
+   {
+    "id": "n4",
+    "slot": "gul"
+   },
+   {
+    "id": "far",
+    "slot": "keh"
+   }
+  ],
+  "edges": [
+   [
+    "me",
+    "n1"
+   ],
+   [
+    "me",
+    "n2"
+   ],
+   [
+    "n1",
+    "n2"
+   ],
+   [
+    "n3",
+    "n4"
+   ],
+   [
+    "n2",
+    "n3"
+   ]
+  ],
+  "result": {
+   "me": "keh",
+   "n2": "zum",
+   "n1": "gok",
+   "n3": "kir",
+   "n4": "gul",
+   "far": "keh"
+  }
+ },
+ {
+  "viewer": null,
+  "nodes": [
+   {
+    "id": "me",
+    "slot": "keh"
+   },
+   {
+    "id": "n1",
+    "slot": "keh"
+   },
+   {
+    "id": "n2",
+    "slot": "mer"
+   },
+   {
+    "id": "n3",
+    "slot": "zum"
+   },
+   {
+    "id": "n4",
+    "slot": "gul"
+   },
+   {
+    "id": "far",
+    "slot": "keh"
+   }
+  ],
+  "edges": [
+   [
+    "me",
+    "n1"
+   ],
+   [
+    "me",
+    "n2"
+   ],
+   [
+    "n1",
+    "n2"
+   ],
+   [
+    "n3",
+    "n4"
+   ],
+   [
+    "n2",
+    "n3"
+   ]
+  ],
+  "result": {
+   "n2": "mer",
+   "me": "lac",
+   "n1": "kir",
+   "n3": "zum",
+   "n4": "gok",
+   "far": "keh"
+  }
+ }
+]

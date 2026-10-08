@@ -20,6 +20,7 @@ import { submitRun } from './game/runs.js';
 import { activeEventsDto, firstLoop, getMap, getRegion } from './game/map.js';
 import { cancelDuel, getDuel, listDuels, previewDuel, startDuel } from './game/duels.js';
 import { normEmail } from './auth/service.js';
+import { inferProvider } from './lib/push-native.js';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -154,7 +155,7 @@ export async function buildApp(d: Deps): Promise<FastifyInstance> {
     const b = parse(S.pushToken, req.body);
     // Bir cihaz jetonu tek hesaba bağlı olur.
     await d.db.query('UPDATE users SET push_token = NULL WHERE push_token = $1 AND id <> $2', [b.token, uid(req)]);
-    await d.db.query('UPDATE users SET push_token = $2, push_platform = $3 WHERE id = $1', [uid(req), b.token, b.platform]);
+    await d.db.query('UPDATE users SET push_token = $2, push_platform = $3, push_provider = $4 WHERE id = $1', [uid(req), b.token, b.platform, inferProvider(b.token, b.platform, b.provider)]);
     return reply.status(204).send();
   });
   app.put('/v1/me/activity', { preHandler: authed }, async (req, reply) => {

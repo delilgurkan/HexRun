@@ -4,6 +4,8 @@ export interface PushMessage {
   body: string;
   data?: Record<string, unknown>;
   priority?: 'default' | 'high';
+  /** Gönderici seçimi (native: apns/fcm). */
+  provider?: 'apns' | 'fcm' | 'expo';
 }
 
 export interface PushResult {

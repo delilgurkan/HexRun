@@ -49,8 +49,8 @@ const PRIORITY: Record<string, number> = { cells_lost: 0, siege_alarm: 1, duel_s
  */
 export async function dispatchPush(d: Deps): Promise<{ sent: number; capped: number; failed: number }> {
   const now = d.clock.now();
-  const due = await d.db.query<{ id: string; user_id: string; kind: string; title: string; body: string; data: Record<string, unknown>; push_token: string | null }>(
-    `SELECT n.id, n.user_id, n.kind, n.title, n.body, n.data, u.push_token FROM notifications n JOIN users u ON u.id = n.user_id
+  const due = await d.db.query<{ id: string; user_id: string; kind: string; title: string; body: string; data: Record<string, unknown>; push_token: string | null; push_provider: 'apns' | 'fcm' | 'expo' | null }>(
+    `SELECT n.id, n.user_id, n.kind, n.title, n.body, n.data, u.push_token, u.push_provider FROM notifications n JOIN users u ON u.id = n.user_id
      WHERE n.push AND n.pushed_at IS NULL AND n.push_status IS NULL AND n.push_after <= $1
      ORDER BY n.push_after LIMIT 1000`,
     [new Date(now)],
@@ -81,7 +81,7 @@ export async function dispatchPush(d: Deps): Promise<{ sent: number; capped: num
         await d.db.query(`UPDATE notifications SET push_status = 'capped', pushed_at = $2 WHERE id = $1`, [n.id, new Date(now)]);
         continue;
       }
-      const [res] = await d.push.send([{ to: n.push_token, title: n.title, body: n.body, data: { id: n.id, kind: n.kind, ...n.data, url: (n.data as { action?: { deeplink?: string } }).action?.deeplink ?? 'hexrun://notifications' }, priority: n.kind === 'cells_lost' || n.kind === 'siege_alarm' ? 'high' : 'default' }]);
+      const [res] = await d.push.send([{ to: n.push_token, provider: n.push_provider ?? 'expo', title: n.title, body: n.body, data: { id: n.id, kind: n.kind, ...n.data, url: (n.data as { action?: { deeplink?: string } }).action?.deeplink ?? 'hexrun://notifications' }, priority: n.kind === 'cells_lost' || n.kind === 'siege_alarm' ? 'high' : 'default' }]);
       if (res?.ok) {
         room--;
         sent++;

@@ -5,6 +5,7 @@ import { buildApp } from './app.js';
 import { systemClock } from './lib/clock.js';
 import { MemoryMailer, SmtpMailer } from './lib/mailer.js';
 import { ExpoPushSender } from './lib/push.js';
+import { ApnsPushSender, FcmPushSender, RoutingPushSender } from './lib/push-native.js';
 import { remoteOidc } from './auth/oidc.js';
 import { startJobs } from './jobs.js';
 import type { Deps } from './deps.js';
@@ -19,7 +20,13 @@ async function main(): Promise<void> {
     db,
     clock: systemClock,
     mailer: cfg.SMTP_URL ? new SmtpMailer(cfg.SMTP_URL, cfg.MAIL_FROM) : new MemoryMailer(),
-    push: new ExpoPushSender(cfg.EXPO_ACCESS_TOKEN),
+    push: new RoutingPushSender({
+      expo: new ExpoPushSender(cfg.EXPO_ACCESS_TOKEN),
+      ...(cfg.APNS_KEY_ID && cfg.APNS_TEAM_ID && cfg.APNS_KEY_P8
+        ? { apns: new ApnsPushSender({ keyId: cfg.APNS_KEY_ID, teamId: cfg.APNS_TEAM_ID, key: cfg.APNS_KEY_P8.replace(/\\n/g, '\n'), topic: cfg.APNS_TOPIC, production: cfg.APNS_PRODUCTION }) }
+        : {}),
+      ...(cfg.FCM_SERVICE_ACCOUNT_JSON ? { fcm: FcmPushSender.fromServiceAccountJson(cfg.FCM_SERVICE_ACCOUNT_JSON) } : {}),
+    }),
     oidc: remoteOidc(cfg.APPLE_JWKS_URL, cfg.GOOGLE_JWKS_URL, list(cfg.APPLE_CLIENT_IDS), list(cfg.GOOGLE_CLIENT_IDS)),
     fetch: globalThis.fetch,
   };

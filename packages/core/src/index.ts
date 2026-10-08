@@ -12,3 +12,4 @@ export * from './privacy.js';
 export * from './streak.js';
 export * from './format.js';
 export * from './imports.js';
+export * from './hat.js';

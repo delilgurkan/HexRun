@@ -31,7 +31,7 @@ export const privacy = z.object({
   home: z.object({ lat: z.number().min(-85).max(85), lng: z.number().min(-180).max(180) }).nullable(),
   radiusM: z.number().int().min(0).max(5000).optional(),
 });
-export const pushToken = z.object({ token: z.string().min(10).max(300), platform: z.enum(['ios', 'android']) });
+export const pushToken = z.object({ token: z.string().min(10).max(4096), platform: z.enum(['ios', 'android']), provider: z.enum(['apns', 'fcm', 'expo']).optional() });
 export const insignia = z.object({ slots: z.array(z.string().max(40).nullable()).max(3) });
 export const team = z.object({ name: z.string().max(64) });
 export const code = z.object({ code: z.string().min(4).max(20) });
