@@ -1,6 +1,6 @@
 # HexRun iOS + watchOS (Swift / SwiftUI)
 
-React Native uygulamasının (`apps/mobile`, yalnız referans) yerini alan native istemci.
+HexRun'un native iOS istemcisi.
 Ortak şartname: `docs/NATIVE.md`.
 
 ```
@@ -130,5 +130,5 @@ end
 
 ## Bilinen eksikler
 
-- Arayüz metinleri yalnız Türkçe (`HexRunKit/Support/Strings.swift`); İngilizce (`apps/mobile/src/i18n/en.ts`)
+- Arayüz metinleri yalnız Türkçe (`HexRunKit/Support/Strings.swift`); İngilizce (`shared/i18n/en.ts`)
   String Catalog olarak eklenmeli.

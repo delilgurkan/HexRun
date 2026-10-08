@@ -1,7 +1,6 @@
 # HexRun Android (Kotlin / Jetpack Compose) + Wear OS
 
-Native Android client for HexRun. The React Native app in `apps/mobile/` is kept only as a
-behaviour/copy reference. Shared rules: `docs/NATIVE.md`, API: `packages/contracts` + `docs/API.md`.
+Native Android client for HexRun. Shared rules: `docs/NATIVE.md`, API: `packages/contracts` + `docs/API.md`.
 
 | Module | What | Builds where |
 |---|---|---|
@@ -86,4 +85,4 @@ the release bundle is unsigned. Phone and watch must share `applicationId` and s
   recording is out of scope.
 - **Fonts**: Archivo (variable: weight + width axes) and IBM Plex Mono are bundled in `res/font` (OFL, see
   `assets/licenses`). HUD digits use the condensed width (wdth 75), headings 115.
-- **Strings**: Turkish only for now (`co.hexrun.core.i18n.S`, ported from `apps/mobile/src/i18n/tr.ts`).
+- **Strings**: Turkish only for now (`co.hexrun.core.i18n.S`, ported from `shared/i18n/tr.ts`).

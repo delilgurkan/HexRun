@@ -1,18 +1,18 @@
 # Mimari
 
 ```
- iOS / Android (Expo)  ──HTTPS/JSON──▶  API (Fastify, durumsuz, N örnek)  ──▶  PostgreSQL 16
-   LoopTracker (core)                      core motoru (aynı kod)                 petek, düello, koşu…
+ iOS (SwiftUI) / Android (Compose) ──HTTPS/JSON──▶  API (Fastify, durumsuz, N örnek)  ──▶  PostgreSQL 16
+   LoopTracker (Swift/Kotlin, vektörlerle)  core motoru (aynı kod)                 petek, düello, koşu…
    çevrimdışı kuyruk                       zamanlanmış işler (tek örnek kilidi)
-                                           push ──▶ Expo ──▶ APNs / FCM
+                                           push ──▶ APNs (iOS) / FCM (Android)
  hexrun.co (statik)  ──▶ /v1/waitlist      Strava / saat adaptörü ──▶ web kancaları
  /admin (statik)     ──▶ /v1/admin/*
 ```
 
 ## Tek kural kaynağı
 
-`@hexrun/core` hem telefonda (HUD: mesafe, tempo, "85 m · halkayı kapat", önizleme) hem sunucuda (yetkili hesap)
-çalışır. Telefon koşunun ham GPS noktalarını gönderir; sunucu halkaları **yeniden** tespit eder, hile kontrolünden
+`@hexrun/core` sunucuda yetkili hesabı yapar; telefondaki HUD mantığı (mesafe, tempo, "85 m · halkayı kapat", önizleme)
+Swift ve Kotlin'de yeniden yazılmıştır ve `shared/test-vectors` ile motorla birebir aynı sonucu verdiği doğrulanır. Telefon koşunun ham GPS noktalarını gönderir; sunucu halkaları **yeniden** tespit eder, hile kontrolünden
 geçirir ve kuralları uygular. Böylece istemci hiçbir oyun sonucunu dikte edemez.
 
 ## Veri modeli (özet)

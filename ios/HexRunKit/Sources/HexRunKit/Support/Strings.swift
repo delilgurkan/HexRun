@@ -1,6 +1,6 @@
 import Foundation
 
-// Türkçe arayüz metinleri (birincil dil); `apps/mobile/src/i18n/tr.ts` ile birebir.
+// Türkçe arayüz metinleri (birincil dil); `shared/i18n/tr.ts` ile birebir.
 // swiftlint:disable line_length
 public enum S {
     public enum common {

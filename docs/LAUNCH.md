@@ -17,7 +17,7 @@
 ## Mağazalar
 - [ ] Apple: Sign in with Apple yetkisi, arka plan konum gerekçesi (inceleme notunda oyunun koşu sırasında izi çizdiği açıklanmalı), hesap silme uygulama içinde (var), gizlilik etiketleri (konum, iletişim bilgisi, kullanım verisi).
 - [ ] Google Play: arka plan konum beyanı + video, Data Safety formu, hesap silme sayfası (`/hesap-silme`, var), ön plan hizmeti türü "location".
-- [ ] EAS Build / Submit profilleri (`apps/mobile/eas.json`), ekran görüntüleri (tasarım tuvalindeki ekranlardan), mağaza metinleri TR/EN.
+- [ ] Xcode Cloud / fastlane (iOS) ve Play Console imzalı AAB (Android) yayın hatları, ekran görüntüleri (tasarım tuvalindeki ekranlardan), mağaza metinleri TR/EN.
 
 ## Entegrasyonlar
 - [ ] Strava API uygulaması (geri çağırma: `/v1/integrations/strava/callback`), web kancası aboneliği.

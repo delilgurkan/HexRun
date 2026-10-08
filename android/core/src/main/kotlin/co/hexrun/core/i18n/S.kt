@@ -1,7 +1,7 @@
 package co.hexrun.core.i18n
 
 /**
- * Türkçe arayüz metinleri (birincil dil) — apps/mobile/src/i18n/tr.ts ile birebir.
+ * Türkçe arayüz metinleri (birincil dil) — shared/i18n/tr.ts ile birebir.
  * Parametreli metinler fonksiyondur. Tasarım panolarındaki metinlerle aynıdır.
  */
 object S {

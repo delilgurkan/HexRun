@@ -8,8 +8,6 @@ coverage/
 *.log
 .DS_Store
 web-build/
-apps/mobile/ios/
-apps/mobile/android/
 # native
 .build/
 .swiftpm/

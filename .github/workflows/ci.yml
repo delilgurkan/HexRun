@@ -49,20 +49,6 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm test
 
-  mobile:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22 }
-      - run: npm ci && npm run build -w @hexrun/core && npm run build -w @hexrun/contracts
-      - run: npm ci
-        working-directory: apps/mobile
-      - run: npx tsc --noEmit
-        working-directory: apps/mobile
-      - run: npm test -- --ci
-        working-directory: apps/mobile
-
   docker:
     runs-on: ubuntu-latest
     steps:

@@ -6,7 +6,9 @@ Son çalıştırma: tümü geçti.
 |---|---|---|
 | Oyun motoru | `npm test -w @hexrun/core` | 78 test (özellik tabanlı fast-check dahil: 300 rastgele eylem dizisi), %100 satır / %96 dal kapsamı |
 | API sunucusu | `npm test -w @hexrun/server` (gerçek PostgreSQL 16) | 68 entegrasyon testi, %97 satır kapsamı |
-| Mobil | `cd apps/mobile && npx tsc --noEmit && npm test` | tip denetimi temiz, 67 test (7 paket); `expo export` iOS + Android paketleri derleniyor |
+| iOS + watchOS | `cd ios && ./ci.sh` (macOS) · `cd ios/HexRunKit && swift test` (Linux) | HexRunKit 69 test, uygulama birim testleri, XCUITest duman akışı (giriş → harita → koşu → fetih → özet), watchOS testleri |
+| Android + Wear OS | `cd android && ./ci.sh` | `:core` 58 test, Robolectric Compose ekran testleri, lint, debug APK, Wear testleri |
+| Ortak vektörler | `npx tsx packages/core/scripts/vectors.ts && git diff --exit-code shared/test-vectors` | Swift ve Kotlin TS motoruyla aynı sonucu veriyor |
 | Web sitesi + yönetim | `cd apps/web && npm test` | html-validate temiz, 52 Playwright testi (axe erişilebilirlik açık/koyu, bağlantı taraması, 320 px taşma, formlar, yönetim akışları) |
 | Bağımlılık güvenliği | `npm audit --omit=dev` | 0 açık |
 

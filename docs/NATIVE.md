@@ -8,7 +8,7 @@ ayrıca **watchOS** ve **Wear OS** eşlikçileri. Sunucu, API ve oyun kuralları
 | Konu | Kaynak |
 |---|---|
 | Ekranlar, metin, renk, ölçü | Tasarım tuvali (26 artboard): `project/*.dc.html` |
-| Ekran akışı ve davranış referansı | Önceki React Native uygulaması `apps/mobile/` (taşıma bitince silinir); Türkçe metinler `apps/mobile/src/i18n/tr.ts`, İngilizce `en.ts` |
+| Arayüz metinleri | `shared/i18n/tr.ts` (birincil), `shared/i18n/en.ts` (İngilizce; native uygulamalara henüz taşınmadı) |
 | API | `packages/contracts/src/index.ts` (tipler) ve `docs/API.md` (uç noktalar) |
 | Oyun kuralları | `packages/core/src` ve `docs/GAME_RULES.md` |
 | İstemci tarafı mantığın doğruluğu | `shared/test-vectors/*.json` — TypeScript motorundan üretilir (`npx tsx packages/core/scripts/vectors.ts`). Swift ve Kotlin testleri bu dosyaları okur ve **aynı** sonucu vermek zorundadır |
