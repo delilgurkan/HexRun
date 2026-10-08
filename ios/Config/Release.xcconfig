@@ -1,0 +1,3 @@
+#include "Shared.xcconfig"
+APS_ENVIRONMENT = production
+#include? "Local.xcconfig"

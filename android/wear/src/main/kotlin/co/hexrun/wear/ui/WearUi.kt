@@ -7,7 +7,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -37,6 +36,9 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.AwaitPointerEventScope
+import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -66,7 +68,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.wear.compose.foundation.CurvedDirection
 import androidx.wear.compose.foundation.CurvedLayout
 import androidx.wear.compose.foundation.CurvedTextStyle
-import androidx.wear.compose.foundation.curvedText
+import androidx.wear.compose.foundation.basicCurvedText
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.CircularProgressIndicator
@@ -249,6 +251,7 @@ private fun HudScreen(
     val scope = rememberCoroutineScope()
     val tap by rememberUpdatedState(onTap)
     val finish by rememberUpdatedState(onFinish)
+    val holding = hold.value > 0f
 
     Box(
         Modifier
@@ -266,14 +269,14 @@ private fun HudScreen(
                     }
                     var timedOut = true
                     val up = withTimeoutOrNull(WearTiming.FINISH_HOLD_MS) {
-                        val r = waitForUpOrCancellation()
+                        val r = awaitStillUp(down, viewConfiguration.touchSlop)
                         timedOut = false
                         r
                     }
                     anim?.cancel()
                     if (timedOut) {
+                        // awaitEachGesture parmak kalkana dek yeni hareketi beklemez.
                         if (finishEnabled) finish()
-                        waitForUpOrCancellation()
                         scope.launch { hold.snapTo(0f) }
                     } else {
                         scope.launch { hold.animateTo(0f, tween(150)) }
@@ -285,7 +288,7 @@ private fun HudScreen(
                 }
             }
             .clearAndSetSemantics {
-                contentDescription = if (hold.value > 0f) holdingLabel else g.description
+                contentDescription = if (holding) holdingLabel else g.description
                 if (g.live) liveRegion = LiveRegionMode.Polite
                 if (tapLabel != null) {
                     onClick(label = tapLabel) {
@@ -442,7 +445,7 @@ private fun GlanceLayout(g: Glance, holdProgress: Float) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = (24 * s).dp, vertical = (if (round) 40 else 20 * 1f).let { (it * s).dp }),
+                .padding(horizontal = (24 * s).dp, vertical = ((if (round) 40f else 20f) * s).dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -517,9 +520,16 @@ private fun GlanceLayout(g: Glance, holdProgress: Float) {
                     anchor = 90f,
                     angularDirection = CurvedDirection.Angular.Reversed,
                 ) {
-                    curvedText(
-                        text = g.curvedHint,
-                        style = CurvedTextStyle(color = WearColors.Ink3, fontSize = fixed(11f), fontWeight = FontWeight.SemiBold),
+                    basicCurvedText(
+                        g.curvedHint,
+                        CurvedTextStyle(
+                            TextStyle(
+                                color = WearColors.Ink3,
+                                fontSize = fixed(11f),
+                                fontFamily = WearFonts.archivo,
+                                fontWeight = FontWeight.SemiBold,
+                            ),
+                        ),
                     )
                 }
             } else {
@@ -535,6 +545,20 @@ private fun GlanceLayout(g: Glance, holdProgress: Float) {
                 )
             }
         }
+    }
+}
+
+/**
+ * Parmağın kalkmasını bekler. Kayarsa (ör. saatin sağa kaydırıp kapatma hareketi) ya da başka bir
+ * öğe olayı tüketirse null: dokunma ve basılı tutma iptal.
+ */
+private suspend fun AwaitPointerEventScope.awaitStillUp(down: PointerInputChange, slop: Float): PointerInputChange? {
+    while (true) {
+        val event = awaitPointerEvent()
+        val change = event.changes.firstOrNull { it.id == down.id } ?: return null
+        if (change.changedToUp()) return change
+        if (change.isConsumed) return null
+        if ((change.position - down.position).getDistance() > slop) return null
     }
 }
 

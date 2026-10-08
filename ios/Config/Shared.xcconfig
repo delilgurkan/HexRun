@@ -1,0 +1,11 @@
+// HexRun yapılandırması. xcconfig'te "//" yorum başlatır: URL'lerde "/$()/" kullanın.
+// Gerçek değerler CI'da ortam değişkeni ya da `Config/Local.xcconfig` (git'e girmez) ile verilir.
+API_BASE_URL = https:/$()/api.hexrun.co
+MAP_STYLE_URL = https:/$()/tiles.openfreemap.org/styles/positron
+MAP_STYLE_URL_DARK = https:/$()/tiles.openfreemap.org/styles/dark
+// Google Sign-In iOS istemci kimliği ve ters çevrilmiş URL şeması (Google Cloud Console).
+GOOGLE_CLIENT_ID =
+GOOGLE_REVERSED_CLIENT_ID = com.googleusercontent.apps.placeholder
+DEVELOPMENT_TEAM =
+MARKETING_VERSION = 1.0.0
+CURRENT_PROJECT_VERSION = 1

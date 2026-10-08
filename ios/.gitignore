@@ -1,0 +1,11 @@
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+build/
+.build/
+HexRunKit/.build/
+HexRunKit/.swiftpm/
+HexRun/Info.plist
+HexRun/HexRun.entitlements
+Config/Local.xcconfig
+fastlane/report.xml

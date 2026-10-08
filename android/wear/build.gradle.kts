@@ -110,5 +110,4 @@ dependencies {
     implementation(libs.play.services.wearable)
 
     testImplementation(libs.junit4)
-    testImplementation(libs.kotlinx.coroutines.test)
 }

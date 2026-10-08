@@ -76,7 +76,7 @@ object MapBitmaps {
                 textSize = maxOf(12f, (d / density) * 0.36f) * density
                 textAlign = Paint.Align.CENTER
                 typeface = font(context)
-                fontVariationSettings = "'wght' 800"
+                setFontVariationSettings("'wght' 800")
             }
             val fm = t.fontMetrics
             cv.drawText(initials, cx, cy - (fm.ascent + fm.descent) / 2, t)
